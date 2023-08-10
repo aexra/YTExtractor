@@ -67,12 +67,17 @@ namespace YTExtractor
                 }
             }
             Download.IsEnabled = true;
-            // initiate download sequence
+            OnDownloadPressed(null, null);
         }
 
         private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
         {
             
+        }
+
+        private void OnDownloadPressed(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
