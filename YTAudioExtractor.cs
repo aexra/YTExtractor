@@ -160,5 +160,14 @@ namespace ConsoleApp1
             }
             return playlistData;
         }
+
+        /// <summary>
+        /// Устаналивает выбранную директорию в качестве папки для сохранения файлов.
+        /// </summary>
+        /// <param name="path"></param>
+        public void SetDownloadPath(string path)
+        {
+            downloadPath = path;
+        }
     }
 }

@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using static System.Net.Mime.MediaTypeNames;
 using Syroot.Windows.IO;
+using System.Data;
+
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -120,9 +122,26 @@ namespace YTExtractor
             System.Diagnostics.Debug.WriteLine(KnownFolders.Downloads.Path);
         }
 
-        private void OnSelectFolderPressed(object sender, RoutedEventArgs e)
+        private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
         {
-            
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Application now has read/write access to all contents in the picked folder
+                // (including other sub-folder contents)
+                //Windows.Storage.AccessCache.StorageApplicationPermissions.
+                //FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                extractor.SetDownloadPath(folder.Path);
+                System.Diagnostics.Debug.WriteLine(folder.Path);
+            }
+            else
+            {
+                
+            }
         }
     }
 }
