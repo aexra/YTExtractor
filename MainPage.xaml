@@ -8,9 +8,13 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DesignWidth="584">
 
-    <Grid>
-        <Button Content="Button" HorizontalAlignment="Center" Margin="0,86,0,0" VerticalAlignment="Top" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}"/>
-        <StackPanel BorderThickness="3" CornerRadius="25" Margin="33,33,33,0" Height="149" VerticalAlignment="Top" FocusVisualPrimaryBrush="#FF3B8E16" FocusVisualSecondaryBrush="#99900000" BorderBrush="#FF4C4C4C">
+    <Grid BorderThickness="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="210"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button Content="Button" HorizontalAlignment="Center" Margin="0,86,0,0" VerticalAlignment="Top" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}" Height="32" Width="62"/>
+        <StackPanel BorderThickness="3" CornerRadius="25" Margin="30,30,30,0" FocusVisualPrimaryBrush="#FF3B8E16" FocusVisualSecondaryBrush="#99900000" BorderBrush="#FF4C4C4C" Height="165" VerticalAlignment="Top">
             <Grid Height="144">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -27,5 +31,7 @@
                 </Grid>
             </Grid>
         </StackPanel>
+        <StackPanel CornerRadius="25" BorderThickness="3" Margin="30,17,30,31" Grid.Row="1" BorderBrush="#FF4C4C4C"/>
     </Grid>
 </Page>
+ 
