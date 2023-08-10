@@ -8,26 +8,26 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DesignWidth="584">
 
-    <Grid BorderThickness="0">
+    <Grid BorderThickness="0" KeyDown="OnUrlKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="210"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Button Content="Button" HorizontalAlignment="Center" Margin="0,86,0,0" VerticalAlignment="Top" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}" Height="32" Width="62"/>
-        <StackPanel BorderThickness="3" CornerRadius="25" Margin="30,30,30,0" FocusVisualPrimaryBrush="#FF3B8E16" FocusVisualSecondaryBrush="#99900000" BorderBrush="#FF4C4C4C" Height="165" VerticalAlignment="Top">
-            <Grid Height="144">
+        <StackPanel BorderThickness="3" CornerRadius="25" Margin="30,30,30,15" FocusVisualPrimaryBrush="#FF3B8E16" FocusVisualSecondaryBrush="#99900000" BorderBrush="#FF4C4C4C">
+            <Grid Height="156">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBox  CornerRadius="10" TextWrapping="Wrap" Text="" Background="{x:Null}" PlaceholderForeground="#FF545454" FontFamily="Comic Sans MS" FontSize="20" BorderBrush="{x:Null}" TextAlignment="Center" SelectionHighlightColor="#FF8A7D78" Foreground="#FF636363" PlaceholderText="Введите сюда ссылку" SelectionHighlightColorWhenNotFocused="{x:Null}" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" Margin="10,10,10,5"/>
+                <TextBox x:Name="UrlBox" CornerRadius="10" TextWrapping="Wrap" Text="" Background="{x:Null}" PlaceholderForeground="#FF545454" FontFamily="Comic Sans MS" FontSize="20" BorderBrush="{x:Null}" TextAlignment="Center" SelectionHighlightColor="#FF8A7D78" Foreground="#FF636363" PlaceholderText="Введите сюда ссылку" SelectionHighlightColorWhenNotFocused="{x:Null}" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" Margin="10,10,10,5" Paste="OnUrlPasted" TextChanged="OnUrlChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                 <Grid Margin="10,5,10,10" Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="246*"/>
                         <ColumnDefinition Width="246*"/>
                     </Grid.ColumnDefinitions>
-                    <Button CornerRadius="5" Content="Загрузить" Grid.Column="0" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#6665FF00" IsEnabled="False"/>
-                    <Button CornerRadius="5" Content="Выбрать папку" Grid.Column="1" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <Button x:Name="Download" CornerRadius="5" Content="Загрузить" Grid.Column="0" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#6665FF00" IsEnabled="False"/>
+                    <Button x:Name="ChooseDirectory" CornerRadius="5" Content="Выбрать папку" Grid.Column="1" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
             </Grid>
         </StackPanel>

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using static System.Net.Mime.MediaTypeNames;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -30,6 +31,48 @@ namespace YTExtractor
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 225));
             ApplicationView.PreferredLaunchViewSize = new Size(480, 800);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+        }
+
+        private void OnUrlChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(UrlBox.Text))
+            {
+                Download.IsEnabled = false;
+                UrlBox.Text = string.Empty;
+                return;
+            }
+            Download.IsEnabled = true;
+        }
+
+        private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
+        {
+            TextBox urlBox = sender as TextBox;
+            var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+            {
+                try
+                {
+                    var text = await dataPackageView.GetTextAsync();
+
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        Download.IsEnabled = false;
+                        urlBox.Text = string.Empty;
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+            Download.IsEnabled = true;
+            // initiate download sequence
+        }
+
+        private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            
         }
     }
 }
