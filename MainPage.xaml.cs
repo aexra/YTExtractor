@@ -18,6 +18,8 @@ using Windows.UI.Xaml.Navigation;
 using static System.Net.Mime.MediaTypeNames;
 using Syroot.Windows.IO;
 using System.Data;
+using Windows.UI.Popups;
+using AngleSharp.Html.Dom;
 
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
@@ -96,7 +98,17 @@ namespace YTExtractor
             // это нормальная ссылка?
             if (!extractor.IsUrl(url))
             {
-                // чото делать если это не нормальная ссылка
+                //var dialog = new MessageDialog("Бака, это не ссылка!");
+                //await dialog.ShowAsync();
+
+                ContentDialog bakaMsg = new ContentDialog()
+                {
+                    Content = "Бака, это не ссылка!",
+                    PrimaryButtonText = "Я бака"
+                };
+                await bakaMsg.ShowAsync();
+                UrlBox.Text = string.Empty;
+                return;
             }
 
             // это (почти) ссылка на ютуб?
