@@ -73,7 +73,7 @@ namespace YTExtractor
                 }
             }
             Download.IsEnabled = true;
-            await OnDownloadPressed(null, null);
+            await InitiateDownloadSequence();
         }
 
         private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
@@ -81,10 +81,15 @@ namespace YTExtractor
             
         }
 
-        private async Task OnDownloadPressed(object sender, RoutedEventArgs e)
+        private async void OnDownloadPressed(object sender, RoutedEventArgs e)
+        {
+            await InitiateDownloadSequence();
+        }
+
+        private async Task InitiateDownloadSequence()
         {
             string url = UrlBox.Text;
-            
+
             // это нормальная ссылка?
             if (!extractor.IsUrl(url))
             {

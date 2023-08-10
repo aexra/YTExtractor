@@ -25,7 +25,6 @@ namespace ConsoleApp1
 
         public YTAudioExtractor()
         {
-            Debug.Log("Создан экземпляр экстрактора");
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyBUS_UGZMp2Hjr6k4Pbn3Azw93hkdOBKwE",
@@ -117,7 +116,6 @@ namespace ConsoleApp1
         public async Task Extract(string videoId)
         {
             Video video = await GetVideoInfoAsync(videoId);
-            Debug.Log($"Извлечение аудио из видео: <{video.Title}>");
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
             string webmpath = $"{tmpPath}{video.Title}.{streamInfo.Container}";
             string mp3path = $"{downloadPath}{video.Title}.{Container.Mp3}";
