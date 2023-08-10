@@ -103,8 +103,8 @@ namespace YTExtractor
                     Content = "Бака, это не ссылка!",
                     PrimaryButtonText = "Я бака"
                 };
-                await bakaMsg.ShowAsync();
                 UrlBox.Text = string.Empty;
+                await bakaMsg.ShowAsync();
                 return;
             }
 
@@ -116,8 +116,8 @@ namespace YTExtractor
                     Content = "Бака, это не ссылка на ютуб!",
                     PrimaryButtonText = "Я бака"
                 };
-                await bakaMsg.ShowAsync();
                 UrlBox.Text = string.Empty;
+                await bakaMsg.ShowAsync();
                 return;
             }
 
