@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
@@ -80,7 +81,7 @@ namespace YTExtractor
             
         }
 
-        private async void OnDownloadPressed(object sender, RoutedEventArgs e)
+        private async Task OnDownloadPressed(object sender, RoutedEventArgs e)
         {
             string url = UrlBox.Text;
             
