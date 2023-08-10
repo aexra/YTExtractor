@@ -98,9 +98,6 @@ namespace YTExtractor
             // это нормальная ссылка?
             if (!extractor.IsUrl(url))
             {
-                //var dialog = new MessageDialog("Бака, это не ссылка!");
-                //await dialog.ShowAsync();
-
                 ContentDialog bakaMsg = new ContentDialog()
                 {
                     Content = "Бака, это не ссылка!",
@@ -114,7 +111,14 @@ namespace YTExtractor
             // это (почти) ссылка на ютуб?
             if (!url.Contains("youtu"))
             {
-                // это явно не ссылка на ютуб
+                ContentDialog bakaMsg = new ContentDialog()
+                {
+                    Content = "Бака, это не ссылка на ютуб!",
+                    PrimaryButtonText = "Я бака"
+                };
+                await bakaMsg.ShowAsync();
+                UrlBox.Text = string.Empty;
+                return;
             }
 
             // это ссылка на плейлист?
