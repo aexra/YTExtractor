@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+using Syroot.Windows.IO;
+
 using NReco.VideoConverter;
 
 namespace ConsoleApp1
@@ -20,7 +22,7 @@ namespace ConsoleApp1
     {
         private YouTubeService youtubeService;
         private YoutubeClient youtubeClient;
-        private string downloadPath = "downloads\\";
+        private string downloadPath = KnownFolders.Downloads.Path;
         private string tmpPath = "tmp\\";
 
         public YTAudioExtractor()
@@ -118,7 +120,7 @@ namespace ConsoleApp1
             Video video = await GetVideoInfoAsync(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
             string webmpath = $"{tmpPath}{video.Title}.{streamInfo.Container}";
-            string mp3path = $"{downloadPath}{video.Title}.{Container.Mp3}";
+            string mp3path = $"{downloadPath}\\{video.Title}.{Container.Mp3}";
             await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, webmpath);
             WebmToMp3(webmpath, mp3path, true);
         }

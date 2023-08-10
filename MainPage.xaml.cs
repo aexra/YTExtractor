@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using static System.Net.Mime.MediaTypeNames;
+using Syroot.Windows.IO;
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
@@ -116,6 +117,12 @@ namespace YTExtractor
 
             // а иначе это просто ссылка на видео
             // предложить скачать видео
+            System.Diagnostics.Debug.WriteLine(KnownFolders.Downloads.Path);
+        }
+
+        private void OnSelectFolderPressed(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
