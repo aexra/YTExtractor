@@ -138,10 +138,6 @@ namespace YTExtractor
                 extractor.SetDownloadPath(folder.Path);
                 System.Diagnostics.Debug.WriteLine(folder.Path);
             }
-            else
-            {
-                
-            }
         }
     }
 }
