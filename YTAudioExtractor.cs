@@ -15,6 +15,7 @@ using System.Web;
 using Syroot.Windows.IO;
 
 using NReco.VideoConverter;
+using System.Linq.Expressions;
 
 namespace ConsoleApp1
 {
@@ -23,7 +24,7 @@ namespace ConsoleApp1
         private YouTubeService youtubeService;
         private YoutubeClient youtubeClient;
         private string downloadPath = KnownFolders.Downloads.Path;
-        private string tmpPath = "tmp\\";
+        private string tmpPath = "tmp";
 
         public YTAudioExtractor()
         {
@@ -119,8 +120,13 @@ namespace ConsoleApp1
         {
             Video video = await GetVideoInfoAsync(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
-            string webmpath = $"{tmpPath}{video.Title}.{streamInfo.Container}";
+            string webmpath = $"{downloadPath}\\{tmpPath}\\{video.Title}.{streamInfo.Container}";
             string mp3path = $"{downloadPath}\\{video.Title}.{Container.Mp3}";
+            if (!System.IO.Directory.Exists(downloadPath + "\\" + tmpPath))
+                try
+                { System.IO.Directory.CreateDirectory(downloadPath + "\\" + tmpPath); }
+                catch (Exception e)
+                { System.Diagnostics.Debug.WriteLine(e.ToString()); }
             await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, webmpath);
             WebmToMp3(webmpath, mp3path, true);
         }
@@ -154,10 +160,13 @@ namespace ConsoleApp1
             var playlistData = new PlaylistData();
             var playlist = await youtubeClient.Playlists.GetAsync(url);
             playlistData.playlistInfo = playlist;
-            await foreach (var video in youtubeClient.Playlists.GetVideosAsync(url))
-            {
-                playlistData.vids.Append<PlaylistVideo>(video);
-            }
+            //await foreach (var batch in youtubeClient.Playlists.GetVideoBatchesAsync(url))
+            //{
+            //    foreach (var video in batch.Items)
+            //    {
+            //        playlistData.vids.Append<PlaylistVideo>(video);
+            //    }
+            //}
             return playlistData;
         }
 
