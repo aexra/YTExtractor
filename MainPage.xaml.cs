@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApp1;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace YTExtractor
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        YTAudioExtractor extractor;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -31,6 +34,8 @@ namespace YTExtractor
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 225));
             ApplicationView.PreferredLaunchViewSize = new Size(480, 800);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
+            extractor = new YTAudioExtractor();
         }
 
         private void OnUrlChanged(object sender, TextChangedEventArgs e)
@@ -67,7 +72,7 @@ namespace YTExtractor
                 }
             }
             Download.IsEnabled = true;
-            OnDownloadPressed(null, null);
+            await OnDownloadPressed(null, null);
         }
 
         private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
@@ -75,9 +80,36 @@ namespace YTExtractor
             
         }
 
-        private void OnDownloadPressed(object sender, RoutedEventArgs e)
+        private async void OnDownloadPressed(object sender, RoutedEventArgs e)
         {
+            string url = UrlBox.Text;
+            
+            // это нормальная ссылка?
+            if (!extractor.IsUrl(url))
+            {
+                // чото делать если это не нормальная ссылка
+            }
 
+            // это (почти) ссылка на ютуб?
+            if (!url.Contains("youtu"))
+            {
+                // это явно не ссылка на ютуб
+            }
+
+            // это ссылка на плейлист?
+            if (url.Contains("playlist"))
+            {
+                // это ссылка на плейлист
+            }
+
+            // это видео состоит в плейлисте?
+            if (url.Contains("&list="))
+            {
+                // это видео состоит в плейлисте
+            }
+
+            // а иначе это просто ссылка на видео
+            // предложить скачать видео
         }
     }
 }
