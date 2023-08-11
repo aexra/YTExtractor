@@ -65,12 +65,11 @@ namespace YTExtractor
         {
             TextBox urlBox = sender as TextBox;
             var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-            if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+            try
             {
-                try
+                if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
                 {
                     var text = await dataPackageView.GetTextAsync();
-
                     if (string.IsNullOrWhiteSpace(text))
                     {
                         Download.IsEnabled = false;
@@ -78,11 +77,7 @@ namespace YTExtractor
                         return;
                     }
                 }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
+            } catch (Exception) { }
             Download.IsEnabled = true;
             await InitiateDownloadSequence();
         }

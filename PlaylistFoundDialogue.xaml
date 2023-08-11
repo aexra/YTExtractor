@@ -29,7 +29,8 @@
                 <ColumnDefinition Width="18*"/>
                 <ColumnDefinition Width="119*"/>
             </Grid.ColumnDefinitions>
-            <Image x:Name="channelThumbnail" Height="55" Margin="-1,0,0,0"/>
+            <Image x:Name="channelThumbnail" Margin="5,5,5,5"/>
+            <Border CornerRadius="90" BorderThickness="1" Margin="5,5,5,5" Background="#FF232323"/>
             <TextBlock x:Name="channelTitle" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" FontSize="18" FontFamily="Comic Sans MS" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
