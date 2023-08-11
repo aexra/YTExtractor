@@ -46,6 +46,8 @@ namespace YTExtractor
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
+
+            extractor.GetVideoInfo("https://youtu.be/mas76qT3JVM");
         }
 
         private void OnUrlChanged(object sender, TextChangedEventArgs e)
