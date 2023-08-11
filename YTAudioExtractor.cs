@@ -19,6 +19,8 @@ using System.Linq.Expressions;
 using YTExtractor;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
+using Windows.Storage;
+using KnownFolders = Syroot.Windows.IO.KnownFolders;
 
 namespace ConsoleApp1
 {
@@ -26,8 +28,9 @@ namespace ConsoleApp1
     {
         private YouTubeService youtubeService;
         private YoutubeClient youtubeClient;
-        private string downloadPath = KnownFolders.Downloads.Path;
+        private string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
         private string tmpPath = "tmp";
+        private FFMpegConverter ffmpeg;
 
         public YTAudioExtractor()
         {
@@ -37,6 +40,8 @@ namespace ConsoleApp1
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
+            ffmpeg = new FFMpegConverter();
+            ffmpeg.FFMpegToolPath = KnownFolders.SavedGames.Path;
         }
 
         /// <summary>
@@ -137,13 +142,10 @@ namespace ConsoleApp1
         {
             VideoData video = GetVideoInfo(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
-            string webmpath = $"{downloadPath}\\{tmpPath}\\{video.title}.{streamInfo.Container}";
+            string webmpath = $"{ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath}\\{video.title}.{streamInfo.Container}";
             string mp3path = $"{downloadPath}\\{video.title}.{Container.Mp3}";
-            if (!System.IO.Directory.Exists(downloadPath + "\\" + tmpPath))
-                try
-                { System.IO.Directory.CreateDirectory(downloadPath + "\\" + tmpPath); }
-                catch (Exception e)
-                { System.Diagnostics.Debug.WriteLine(e.ToString()); }
+            if (!System.IO.Directory.Exists(ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath))
+                await ApplicationData.Current.LocalFolder.CreateFolderAsync("tmp");
             await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, webmpath);
             WebmToMp3(webmpath, mp3path, true);
         }
@@ -156,7 +158,6 @@ namespace ConsoleApp1
         /// <param name="deleteOriginal">Нужно ли удалять оригинал</param>
         public void WebmToMp3(string inputPath, string outputPath, bool deleteOriginal = true)
         {
-            var ffmpeg = new FFMpegConverter();
             ffmpeg.ConvertMedia(inputPath, outputPath, "mp3");
 
             if (deleteOriginal)
