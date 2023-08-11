@@ -142,10 +142,11 @@ namespace ConsoleApp1
         {
             VideoData video = GetVideoInfo(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
-            string webmpath = $"{ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath}\\{video.title}.{streamInfo.Container}";
+            //string webmpath = $"{ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath}\\{video.title}.{streamInfo.Container}";
+            string webmpath = $"{downloadPath}\\{video.title}.{streamInfo.Container}";
             string mp3path = $"{downloadPath}\\{video.title}.{Container.Mp3}";
-            if (!System.IO.Directory.Exists(ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath))
-                await ApplicationData.Current.LocalFolder.CreateFolderAsync("tmp");
+            //if (!System.IO.Directory.Exists(ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath))
+            //    await ApplicationData.Current.LocalFolder.CreateFolderAsync("tmp");
             await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, webmpath);
             WebmToMp3(webmpath, mp3path, true);
         }
