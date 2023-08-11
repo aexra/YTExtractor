@@ -184,8 +184,9 @@ namespace ConsoleApp1
             //        playlistData.vids.Append<PlaylistVideo>(video);
             //    }
             //}
-            NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(url);
-            string id = parsed["id"].ToString();
+            NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(url).Query);
+            string id = parsed["list"].ToString();
+            //id = id.Substring(2);
             PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
             request.Id = id;
             var response = request.Execute().Items.First().Snippet;
