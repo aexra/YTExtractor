@@ -179,12 +179,12 @@ namespace YTExtractor
                 }
                 else
                 {
-                    var vid = await extractor.GetVideoInfoAsync(url);
+                    var vid = extractor.GetVideoInfoAsync(url);
                     PlaylistFoundDialogue f = new PlaylistFoundDialogue(
-                        vid.Title,
-                        vid.Thumbnails.FirstOrDefault().Url,
-                        vid.Author.ChannelTitle,
-                        vid.Author.ChannelUrl
+                        vid.title,
+                        vid.thumbnail,
+                        vid.channelTitle,
+                        vid.channelTitle
                     )
                     {
                         Title = $"Найдено видео",
@@ -208,12 +208,12 @@ namespace YTExtractor
 
             // а иначе это просто ссылка на видео
             // предложить скачать видео
-            var video = await extractor.GetVideoInfoAsync(url);
+            var video = extractor.GetVideoInfoAsync(url);
             PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
-                video.Title,
-                video.Thumbnails.FirstOrDefault().Url,
-                video.Author.ChannelTitle,
-                video.Author.ChannelUrl
+                video.title,
+                video.thumbnail,
+                video.channelTitle,
+                video.channelThumbnail
             )
             {
                 Title = $"Найдено видео",

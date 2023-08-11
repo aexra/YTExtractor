@@ -16,6 +16,8 @@ using Syroot.Windows.IO;
 
 using NReco.VideoConverter;
 using System.Linq.Expressions;
+using YTExtractor;
+using Google.Apis.YouTube.v3.Data;
 
 namespace ConsoleApp1
 {
@@ -79,10 +81,24 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task<Video> GetVideoInfoAsync(string videoId)
+        public VideoData GetVideoInfoAsync(string videoId)
         {
             if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
-            return await youtubeClient.Videos.GetAsync(videoId);
+            //return await youtubeClient.Videos.GetAsync(videoId);
+            VideosResource.ListRequest listRequest = youtubeService.Videos.List("snippet");
+            listRequest.Id = videoId;
+            VideoListResponse response = listRequest.Execute();
+            var r = response.Items.First().Snippet;
+            VideoData vd = new VideoData();
+            vd.id = videoId;
+            vd.title = r.Title;
+            vd.thumbnail = r.Thumbnails.High.Url;
+            vd.channelId = r.ChannelId;
+            vd.channelTitle = r.ChannelTitle;
+            ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
+            request.Id = r.ChannelId;
+            vd.channelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
+            return vd;
         }
 
         /// <summary>
@@ -118,10 +134,10 @@ namespace ConsoleApp1
         /// <returns></returns>
         public async Task Extract(string videoId)
         {
-            Video video = await GetVideoInfoAsync(videoId);
+            VideoData video = GetVideoInfoAsync(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
-            string webmpath = $"{downloadPath}\\{tmpPath}\\{video.Title}.{streamInfo.Container}";
-            string mp3path = $"{downloadPath}\\{video.Title}.{Container.Mp3}";
+            string webmpath = $"{downloadPath}\\{tmpPath}\\{video.title}.{streamInfo.Container}";
+            string mp3path = $"{downloadPath}\\{video.title}.{Container.Mp3}";
             if (!System.IO.Directory.Exists(downloadPath + "\\" + tmpPath))
                 try
                 { System.IO.Directory.CreateDirectory(downloadPath + "\\" + tmpPath); }

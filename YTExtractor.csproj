@@ -131,6 +131,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VideoData.cs" />
     <Compile Include="YTAudioExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
