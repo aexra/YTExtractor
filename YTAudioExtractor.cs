@@ -18,6 +18,7 @@ using NReco.VideoConverter;
 using System.Linq.Expressions;
 using YTExtractor;
 using Google.Apis.YouTube.v3.Data;
+using System.Collections.Specialized;
 
 namespace ConsoleApp1
 {
@@ -171,11 +172,11 @@ namespace ConsoleApp1
         /// Возвращает информацию о плейлисте по введенной ссылке
         /// </summary>
         /// <returns></returns>
-        public async Task<PlaylistData> GetPlaylistData(string url)
+        public PlaylistData GetPlaylistData(string url)
         {
             var playlistData = new PlaylistData();
-            var playlist = await youtubeClient.Playlists.GetAsync(url);
-            playlistData.playlistInfo = playlist;
+            //var playlist = await youtubeClient.Playlists.GetAsync(url);
+            //playlistData.playlistInfo = playlist;
             //await foreach (var batch in youtubeClient.Playlists.GetVideoBatchesAsync(url))
             //{
             //    foreach (var video in batch.Items)
@@ -183,6 +184,19 @@ namespace ConsoleApp1
             //        playlistData.vids.Append<PlaylistVideo>(video);
             //    }
             //}
+            NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(url);
+            string id = parsed["id"].ToString();
+            PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
+            request.Id = id;
+            var response = request.Execute().Items.First().Snippet;
+            playlistData.title = response.Title;
+            playlistData.thumbnail = response.Thumbnails.High.Url;
+            playlistData.description = response.Description;
+            playlistData.channelId = response.ChannelId;
+            playlistData.channelTitle = response.ChannelTitle;
+            ChannelsResource.ListRequest req = youtubeService.Channels.List("snippet");
+            req.Id = response.ChannelId;
+            playlistData.channelThumbnail = req.Execute().Items.First().Snippet.Thumbnails.High.Url;
             return playlistData;
         }
 

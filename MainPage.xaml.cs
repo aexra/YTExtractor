@@ -128,12 +128,12 @@ namespace YTExtractor
             // это ссылка на плейлист?
             if (url.Contains("playlist"))
             {
-                PlaylistData p = await extractor.GetPlaylistData(url);
+                PlaylistData p = extractor.GetPlaylistData(url);
                 PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
-                    p.playlistInfo.Title,
-                    p.playlistInfo.Thumbnails.FirstOrDefault().Url,
-                    p.playlistInfo.Author.ChannelTitle,
-                    p.playlistInfo.Author.ChannelUrl
+                    p.title,
+                    p.thumbnail,
+                    p.channelTitle,
+                    p.channelThumbnail
                 )
                 {
                     Title = $"Обнаружен плейлист",
@@ -157,12 +157,12 @@ namespace YTExtractor
             // это видео состоит в плейлисте?
             if (url.Contains("&list="))
             {
-                PlaylistData pd = await extractor.GetPlaylistData(url);
+                PlaylistData pd = extractor.GetPlaylistData(url);
                 PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
-                    pd.playlistInfo.Title,
-                    pd.playlistInfo.Thumbnails.FirstOrDefault().Url,
-                    pd.playlistInfo.Author.ChannelTitle,
-                    pd.playlistInfo.Author.ChannelUrl
+                    pd.title,
+                    pd.thumbnail,
+                    pd.channelTitle,
+                    pd.channelThumbnail
                 )
                 {
                     Title = $"Обнаружен плейлист",
