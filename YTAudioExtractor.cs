@@ -41,7 +41,7 @@ namespace ConsoleApp1
             });
             youtubeClient = new YoutubeClient();
             ffmpeg = new FFMpegConverter();
-            ffmpeg.FFMpegToolPath = KnownFolders.SavedGames.Path;
+            //ffmpeg.FFMpegToolPath = KnownFolders.SavedGames.Path;
         }
 
         /// <summary>
@@ -159,7 +159,6 @@ namespace ConsoleApp1
         public void WebmToMp3(string inputPath, string outputPath, bool deleteOriginal = true)
         {
             ffmpeg.ConvertMedia(inputPath, outputPath, "mp3");
-
             if (deleteOriginal)
             {
                 if (File.Exists(inputPath))
