@@ -82,7 +82,7 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public VideoData GetVideoInfoAsync(string videoId)
+        public VideoData GetVideoInfo(string videoId)
         {
             if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
             //return await youtubeClient.Videos.GetAsync(videoId);
@@ -135,7 +135,7 @@ namespace ConsoleApp1
         /// <returns></returns>
         public async Task Extract(string videoId)
         {
-            VideoData video = GetVideoInfoAsync(videoId);
+            VideoData video = GetVideoInfo(videoId);
             IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
             string webmpath = $"{downloadPath}\\{tmpPath}\\{video.title}.{streamInfo.Container}";
             string mp3path = $"{downloadPath}\\{video.title}.{Container.Mp3}";

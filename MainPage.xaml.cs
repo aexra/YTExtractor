@@ -179,7 +179,7 @@ namespace YTExtractor
                 }
                 else
                 {
-                    var vid = extractor.GetVideoInfoAsync(url);
+                    var vid = extractor.GetVideoInfo(url);
                     PlaylistFoundDialogue f = new PlaylistFoundDialogue(
                         vid.title,
                         vid.thumbnail,
@@ -208,7 +208,7 @@ namespace YTExtractor
 
             // а иначе это просто ссылка на видео
             // предложить скачать видео
-            var video = extractor.GetVideoInfoAsync(url);
+            var video = extractor.GetVideoInfo(url);
             PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
                 video.title,
                 video.thumbnail,
