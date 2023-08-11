@@ -101,22 +101,22 @@ namespace YTExtractor
 
             // это нормальная ссылка?
             if (!extractor.IsUrl(url))
-                BadUrlWarning(url, WarningType.InvalidUrl);
+                await BadUrlWarning(url, WarningType.InvalidUrl);
 
             // это (почти) ссылка на ютуб?
             else if (!url.Contains("youtu"))
-                BadUrlWarning(url, WarningType.NotYTUrl);
+                await BadUrlWarning(url, WarningType.NotYTUrl);
 
             // это ссылка на плейлист?
             else if (url.Contains("playlist"))
-                DownloadPlaylist(url);
+                await DownloadPlaylist(url);
 
             // это видео состоит в плейлисте?
             else if (url.Contains("&list="))
-                DownloadInPlaylist(url);
+                await DownloadInPlaylist(url);
 
             // а иначе это просто ссылка на видео
-            else DownloadOne(url);
+            else await DownloadOne(url);
         }
 
         private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
@@ -137,7 +137,7 @@ namespace YTExtractor
             }
         }
 
-        private async void BadUrlWarning(string url, WarningType t)
+        private async Task BadUrlWarning(string url, WarningType t)
         {
             switch (t)
             {
@@ -192,7 +192,7 @@ namespace YTExtractor
             }
         }
 
-        private async void DownloadPlaylist(string url)
+        private async Task DownloadPlaylist(string url)
         {
             PlaylistData p = extractor.GetPlaylistData(url);
             PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
@@ -214,7 +214,7 @@ namespace YTExtractor
                 // extract all
         }
 
-        private async void DownloadInPlaylist(string url)
+        private async Task DownloadInPlaylist(string url)
         {
             PlaylistData pd = extractor.GetPlaylistData(url);
             PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
@@ -226,39 +226,18 @@ namespace YTExtractor
             {
                 Title = $"Обнаружен плейлист",
                 PrimaryButtonText = "Извлечь все",
-                SecondaryButtonText = "Извлечь только это видео",
+                SecondaryButtonText = "Извлечь только из этого видео",
             };
             Download.IsEnabled = false;
             UrlBox.Text = string.Empty;
             var result = await vfip.ShowAsync();
             if (result == ContentDialogResult.Primary)
-            {
-                // extract all
-                return;
-            }
+                await DownloadPlaylist(url);
             else
-            {
-                var vid = extractor.GetVideoInfo(url);
-                PlaylistFoundDialogue f = new PlaylistFoundDialogue(
-                    vid.title,
-                    vid.thumbnail,
-                    vid.channelTitle,
-                    vid.channelTitle
-                )
-                {
-                    Title = $"Найдено видео",
-                    PrimaryButtonText = "Извлечь аудио",
-                    SecondaryButtonText = "Отмена",
-                };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
-                result = await f.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                    await extractor.Extract(url);
-            }
+                await DownloadOne(url);
         }
 
-        private async void DownloadOne(string url)
+        private async Task DownloadOne(string url)
         {
             var video = extractor.GetVideoInfo(url);
             PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
