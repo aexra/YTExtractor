@@ -22,6 +22,7 @@ using Windows.UI.Popups;
 using AngleSharp.Html.Dom;
 using YoutubeExplode.Playlists;
 using Google.Apis.YouTube.v3.Data;
+using AngleSharp.Dom;
 
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
@@ -34,6 +35,7 @@ namespace YTExtractor
     public sealed partial class MainPage : Page
     {
         YTAudioExtractor extractor;
+        enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound};
 
         public MainPage()
         {
@@ -99,139 +101,22 @@ namespace YTExtractor
 
             // это нормальная ссылка?
             if (!extractor.IsUrl(url))
-            {
-                ContentDialog bakaMsg = new ContentDialog()
-                {
-                    Content = "Бака, это не ссылка!",
-                    PrimaryButtonText = "Я бака"
-                };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
-                await bakaMsg.ShowAsync();
-                return;
-            }
+                BadUrlWarning(url, WarningType.InvalidUrl);
 
             // это (почти) ссылка на ютуб?
-            if (!url.Contains("youtu"))
-            {
-                ContentDialog bakaMsg = new ContentDialog()
-                {
-                    Content = "Бака, это не ссылка на ютуб!",
-                    PrimaryButtonText = "Я бака"
-                };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
-                await bakaMsg.ShowAsync();
-                return;
-            }
+            else if (!url.Contains("youtu"))
+                BadUrlWarning(url, WarningType.NotYTUrl);
 
             // это ссылка на плейлист?
-            if (url.Contains("playlist"))
-            {
-                PlaylistData p = extractor.GetPlaylistData(url);
-                PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
-                    p.title,
-                    p.thumbnail,
-                    p.channelTitle,
-                    p.channelThumbnail
-                )
-                {
-                    Title = $"Обнаружен плейлист",
-                    PrimaryButtonText = "Извлечь все",
-                    SecondaryButtonText = "Отмена",
-                };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
-                var result = await pfd.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    // extract all
-                    return;
-                }
-                else
-                {
-                    return;
-                }
-            }
+            else if (url.Contains("playlist"))
+                DownloadPlaylist(url);
 
             // это видео состоит в плейлисте?
-            if (url.Contains("&list="))
-            {
-                PlaylistData pd = extractor.GetPlaylistData(url);
-                PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
-                    pd.title,
-                    pd.thumbnail,
-                    pd.channelTitle,
-                    pd.channelThumbnail
-                )
-                {
-                    Title = $"Обнаружен плейлист",
-                    PrimaryButtonText = "Извлечь все",
-                    SecondaryButtonText = "Извлечь только это видео",
-                };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
-                var result = await vfip.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    // extract all
-                    return;
-                }
-                else
-                {
-                    var vid = extractor.GetVideoInfo(url);
-                    PlaylistFoundDialogue f = new PlaylistFoundDialogue(
-                        vid.title,
-                        vid.thumbnail,
-                        vid.channelTitle,
-                        vid.channelTitle
-                    )
-                    {
-                        Title = $"Найдено видео",
-                        PrimaryButtonText = "Извлечь аудио",
-                        SecondaryButtonText = "Отмена",
-                    };
-                    Download.IsEnabled = false;
-                    UrlBox.Text = string.Empty;
-                    result =  await f.ShowAsync();
-                    if (result == ContentDialogResult.Primary)
-                    {
-                        await extractor.Extract(url);
-                        return;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
+            else if (url.Contains("&list="))
+                DownloadInPlaylist(url);
 
             // а иначе это просто ссылка на видео
-            // предложить скачать видео
-            var video = extractor.GetVideoInfo(url);
-            PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
-                video.title,
-                video.thumbnail,
-                video.channelTitle,
-                video.channelThumbnail
-            )
-            {
-                Title = $"Найдено видео",
-                PrimaryButtonText = "Извлечь аудио",
-                SecondaryButtonText = "Отмена",
-            };
-            Download.IsEnabled = false;
-            UrlBox.Text = string.Empty;
-            var res = await fv.ShowAsync();
-            if (res == ContentDialogResult.Primary)
-            {
-                await extractor.Extract(url);
-                return;
-            }
-            else
-            {
-                return;
-            }
+            else DownloadOne(url);
         }
 
         private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
@@ -250,6 +135,148 @@ namespace YTExtractor
                 extractor.SetDownloadPath(folder.Path);
                 System.Diagnostics.Debug.WriteLine(folder.Path);
             }
+        }
+
+        private async void BadUrlWarning(string url, WarningType t)
+        {
+            switch (t)
+            {
+                case WarningType.InvalidUrl:
+                    {
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = "Бака, это не ссылка!",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        Download.IsEnabled = false;
+                        UrlBox.Text = string.Empty;
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.NotYTUrl:
+                    {
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = "Бака, это не ссылка на ютуб!",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        Download.IsEnabled = false;
+                        UrlBox.Text = string.Empty;
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.PlaylistNotFound:
+                    {
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не нашел плейлиста по твоей ссылке!\n\r{url}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        Download.IsEnabled = false;
+                        UrlBox.Text = string.Empty;
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.VideoNotFound:
+                    {
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        Download.IsEnabled = false;
+                        UrlBox.Text = string.Empty;
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+            }
+        }
+
+        private async void DownloadPlaylist(string url)
+        {
+            PlaylistData p = extractor.GetPlaylistData(url);
+            PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
+                p.title,
+                p.thumbnail,
+                p.channelTitle,
+                p.channelThumbnail
+            )
+            {
+                Title = $"Обнаружен плейлист",
+                PrimaryButtonText = "Извлечь все",
+                SecondaryButtonText = "Отмена",
+            };
+            Download.IsEnabled = false;
+            UrlBox.Text = string.Empty;
+            var result = await pfd.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            { }
+                // extract all
+        }
+
+        private async void DownloadInPlaylist(string url)
+        {
+            PlaylistData pd = extractor.GetPlaylistData(url);
+            PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
+                pd.title,
+                pd.thumbnail,
+                pd.channelTitle,
+                pd.channelThumbnail
+            )
+            {
+                Title = $"Обнаружен плейлист",
+                PrimaryButtonText = "Извлечь все",
+                SecondaryButtonText = "Извлечь только это видео",
+            };
+            Download.IsEnabled = false;
+            UrlBox.Text = string.Empty;
+            var result = await vfip.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                // extract all
+                return;
+            }
+            else
+            {
+                var vid = extractor.GetVideoInfo(url);
+                PlaylistFoundDialogue f = new PlaylistFoundDialogue(
+                    vid.title,
+                    vid.thumbnail,
+                    vid.channelTitle,
+                    vid.channelTitle
+                )
+                {
+                    Title = $"Найдено видео",
+                    PrimaryButtonText = "Извлечь аудио",
+                    SecondaryButtonText = "Отмена",
+                };
+                Download.IsEnabled = false;
+                UrlBox.Text = string.Empty;
+                result = await f.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                    await extractor.Extract(url);
+            }
+        }
+
+        private async void DownloadOne(string url)
+        {
+            var video = extractor.GetVideoInfo(url);
+            PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
+                video.title,
+                video.thumbnail,
+                video.channelTitle,
+                video.channelThumbnail
+            )
+            {
+                Title = $"Найдено видео",
+                PrimaryButtonText = "Извлечь аудио",
+                SecondaryButtonText = "Отмена",
+            };
+            Download.IsEnabled = false;
+            UrlBox.Text = string.Empty;
+            var res = await fv.ShowAsync();
+            if (res == ContentDialogResult.Primary)
+                await extractor.Extract(url);
         }
     }
 }
