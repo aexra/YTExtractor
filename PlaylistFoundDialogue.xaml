@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="206*"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="playlistThumbnail"/>
-            <TextBlock x:Name="playlistTitle" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" FontFamily="Comic Sans MS" FontSize="20" TextAlignment="Justify" Margin="10,10,10,10"/>
+            <TextBlock x:Name="playlistTitle" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" FontFamily="Comic Sans MS" FontSize="20" TextAlignment="Justify" Margin="10,10,10,10" VerticalAlignment="Center"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
