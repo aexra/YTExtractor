@@ -31,7 +31,9 @@
                 </Grid>
             </Grid>
         </StackPanel>
-        <StackPanel CornerRadius="25" BorderThickness="3" Margin="30,17,30,31" Grid.Row="1" BorderBrush="#FF4C4C4C"/>
+        <StackPanel CornerRadius="25" BorderThickness="3" Margin="30,17,30,31" Grid.Row="1" BorderBrush="#FF4C4C4C">
+            <MediaElement x:Name="media" Height="100" Width="100" AudioCategory="Media"/>
+        </StackPanel>
     </Grid>
 </Page>
  

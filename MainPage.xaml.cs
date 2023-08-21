@@ -111,7 +111,7 @@ namespace YTExtractor
             // это видео состоит в плейлисте?
             else if (url.Contains("&list="))
                 await DownloadInPlaylist(url);
-
+            
             // а иначе это просто ссылка на видео
             else await DownloadOne(url);
         }
@@ -257,7 +257,7 @@ namespace YTExtractor
             UrlBox.Text = string.Empty;
             var res = await fv.ShowAsync();
             if (res == ContentDialogResult.Primary)
-                await extractor.Extract(url);
+                await extractor.Extract(url, media);
         }
     }
 }

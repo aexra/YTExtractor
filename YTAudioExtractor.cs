@@ -24,6 +24,7 @@ using KnownFolders = Syroot.Windows.IO.KnownFolders;
 using System.Threading;
 using System.Net;
 using Windows.Networking.BackgroundTransfer;
+using Windows.UI.Xaml.Controls;
 
 namespace ConsoleApp1
 {
@@ -141,31 +142,35 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task Extract(string videoId)
+        public async Task Extract(string videoId, MediaElement media = null)
         {
             var url = await GetAudioUrlAsync(videoId);
             var info = GetVideoInfo(videoId);
-            try
-            {
-                Uri source = new Uri(url);
-                System.Diagnostics.Debug.WriteLine(url);
 
-                using (var client = new WebClient())
-                {
-                    string content = client.DownloadString(url);
-                    System.Diagnostics.Debug.WriteLine(content);
-                }
+            if (media != null)
+                media.Source = new Uri(url);
 
-                var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(downloadPath);
-                StorageFile destinationFile = await folder.CreateFileAsync(info.title + ".webm");
+            //try
+            //{
+            //    Uri source = new Uri(url);
+            //    System.Diagnostics.Debug.WriteLine(url);
 
-                BackgroundDownloader downloader = new BackgroundDownloader();
-                DownloadOperation download = downloader.CreateDownload(source, destinationFile);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[EXCEPTION]" + ex);
-            }
+            //    using (var client = new WebClient())
+            //    {
+            //        string content = client.DownloadString(url);
+            //        System.Diagnostics.Debug.WriteLine(content);
+            //    }
+
+            //    var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(downloadPath);
+            //    StorageFile destinationFile = await folder.CreateFileAsync(info.title + ".webm");
+
+            //    BackgroundDownloader downloader = new BackgroundDownloader();
+            //    DownloadOperation download = downloader.CreateDownload(source, destinationFile);
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Diagnostics.Debug.WriteLine("[EXCEPTION]" + ex);
+            //}
         }
 
         /// <summary>
