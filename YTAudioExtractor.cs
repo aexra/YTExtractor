@@ -204,10 +204,10 @@ namespace ConsoleApp1
             //}
             NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(url).Query);
             string id = parsed["list"].ToString();
+            if (id == "LL") return null;
             //id = id.Substring(2);
             PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
             request.Id = id;
-            // TODO: fix bug if user entered link to liked list (list=LL)
             var response = request.Execute().Items.First().Snippet;
             playlistData.title = response.Title;
             playlistData.thumbnail = response.Thumbnails.High.Url;

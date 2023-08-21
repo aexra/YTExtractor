@@ -214,6 +214,11 @@ namespace YTExtractor
         private async Task DownloadInPlaylist(string url)
         {
             PlaylistData pd = extractor.GetPlaylistData(url);
+            if (pd == null)
+            {
+                await DownloadOne(url);
+                return;
+            }
             PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
                 pd.title,
                 pd.thumbnail,
