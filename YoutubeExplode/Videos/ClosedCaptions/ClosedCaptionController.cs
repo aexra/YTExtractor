@@ -23,7 +23,7 @@ internal class ClosedCaptionController : VideoController
             .Pipe(s => UrlEx.SetQueryParameter(s, "fmt", "3"));
 
         return ClosedCaptionTrackResponse.Parse(
-            await Http.GetStringAsync(urlWithFormat)
+            await Http.GetStringAsync(urlWithFormat, cancellationToken)
         );
     }
 }

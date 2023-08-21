@@ -43,7 +43,7 @@ internal class PlaylistController
         response.EnsureSuccessStatusCode();
 
         var playlistResponse = PlaylistBrowseResponse.Parse(
-            await response.Content.ReadAsStringAsync()
+            await response.Content.ReadAsStringAsync(cancellationToken)
         );
 
         if (!playlistResponse.IsAvailable)
@@ -90,7 +90,7 @@ internal class PlaylistController
             response.EnsureSuccessStatusCode();
 
             var playlistResponse = PlaylistNextResponse.Parse(
-                await response.Content.ReadAsStringAsync()
+                await response.Content.ReadAsStringAsync(cancellationToken)
             );
 
             if (!playlistResponse.IsAvailable)

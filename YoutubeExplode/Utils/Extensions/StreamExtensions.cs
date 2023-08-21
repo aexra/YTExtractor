@@ -19,11 +19,11 @@ internal static class StreamExtensions
         var totalBytesRead = 0L;
         while (true)
         {
-            var bytesRead = await source.ReadAsync(buffer.Memory.ToArray(), 0, buffer.Memory.Length);
+            var bytesRead = await source.ReadAsync(buffer.Memory, cancellationToken);
             if (bytesRead <= 0)
                 break;
 
-            await destination.WriteAsync(buffer.Memory.ToArray(), 0, buffer.Memory.Length);
+            await destination.WriteAsync(buffer.Memory[..bytesRead], cancellationToken);
 
             totalBytesRead += bytesRead;
             progress?.Report(1.0 * totalBytesRead / source.Length);
