@@ -50,7 +50,7 @@ internal class SearchController
         response.EnsureSuccessStatusCode();
 
         return SearchResponse.Parse(
-            await response.Content.ReadAsStringAsync(cancellationToken)
+            await response.Content.ReadAsStringAsync()
         );
     }
 }
