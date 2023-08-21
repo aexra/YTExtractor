@@ -19,8 +19,10 @@ using static System.Net.Mime.MediaTypeNames;
 using Syroot.Windows.IO;
 using System.Data;
 using Windows.UI.Popups;
+using AngleSharp.Html.Dom;
 using YoutubeExplode.Playlists;
 using Google.Apis.YouTube.v3.Data;
+using AngleSharp.Dom;
 
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
