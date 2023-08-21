@@ -21,6 +21,9 @@ using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
 using KnownFolders = Syroot.Windows.IO.KnownFolders;
+using System.Threading;
+using System.Net;
+using Windows.Networking.BackgroundTransfer;
 
 namespace ConsoleApp1
 {
@@ -140,15 +143,29 @@ namespace ConsoleApp1
         /// <returns></returns>
         public async Task Extract(string videoId)
         {
-            VideoData video = GetVideoInfo(videoId);
-            IStreamInfo streamInfo = await GetAudioStreamAsync(videoId);
-            //string webmpath = $"{ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath}\\{video.title}.{streamInfo.Container}";
-            string webmpath = $"{downloadPath}\\{video.title}.{streamInfo.Container}";
-            string mp3path = $"{downloadPath}\\{video.title}.{Container.Mp3}";
-            //if (!System.IO.Directory.Exists(ApplicationData.Current.LocalFolder.Path + "\\" + tmpPath))
-            //    await ApplicationData.Current.LocalFolder.CreateFolderAsync("tmp");
-            await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, webmpath);
-            WebmToMp3(webmpath, mp3path, true);
+            var url = await GetAudioUrlAsync(videoId);
+            var info = GetVideoInfo(videoId);
+            try
+            {
+                Uri source = new Uri(url);
+                System.Diagnostics.Debug.WriteLine(url);
+
+                using (var client = new WebClient())
+                {
+                    string content = client.DownloadString(url);
+                    System.Diagnostics.Debug.WriteLine(content);
+                }
+
+                var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(downloadPath);
+                StorageFile destinationFile = await folder.CreateFileAsync(info.title + ".webm");
+
+                BackgroundDownloader downloader = new BackgroundDownloader();
+                DownloadOperation download = downloader.CreateDownload(source, destinationFile);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[EXCEPTION]" + ex);
+            }
         }
 
         /// <summary>
