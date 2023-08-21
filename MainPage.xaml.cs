@@ -23,6 +23,7 @@ using AngleSharp.Html.Dom;
 using YoutubeExplode.Playlists;
 using Google.Apis.YouTube.v3.Data;
 using AngleSharp.Dom;
+using System.Threading;
 
 
 // Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
@@ -257,7 +258,7 @@ namespace YTExtractor
             UrlBox.Text = string.Empty;
             var res = await fv.ShowAsync();
             if (res == ContentDialogResult.Primary)
-                await extractor.Extract(url, media);
+                await extractor.Extract(url);
         }
     }
 }

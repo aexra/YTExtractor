@@ -25,6 +25,9 @@ using System.Threading;
 using System.Net;
 using Windows.Networking.BackgroundTransfer;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Shapes;
+using System.Net.Http;
 
 namespace ConsoleApp1
 {
@@ -32,6 +35,8 @@ namespace ConsoleApp1
     {
         private YouTubeService youtubeService;
         private YoutubeClient youtubeClient;
+        private HttpClient _http;
+        //private HttpClientHandler _handler;
         private string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
         private string tmpPath = "tmp";
         private FFMpegConverter ffmpeg;
@@ -44,6 +49,11 @@ namespace ConsoleApp1
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
+            //_handler = new HttpClientHandler();
+            //_handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            _http = new HttpClient();
+            //_http.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+            //_http.DefaultRequestHeaders.Add("Accept-Encoding", "deflate");
             ffmpeg = new FFMpegConverter();
             //ffmpeg.FFMpegToolPath = KnownFolders.SavedGames.Path;
         }
@@ -142,35 +152,22 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task Extract(string videoId, MediaElement media = null)
+        public async Task Extract(string videoId, IProgress<int> progres = null)
         {
-            var url = await GetAudioUrlAsync(videoId);
             var info = GetVideoInfo(videoId);
+            var url = await GetAudioUrlAsync(videoId);
+            var uri = new Uri(url);
+            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(info.title, CreationCollisionOption.GenerateUniqueName);
 
-            if (media != null)
-                media.Source = new Uri(url);
-
-            //try
-            //{
-            //    Uri source = new Uri(url);
-            //    System.Diagnostics.Debug.WriteLine(url);
-
-            //    using (var client = new WebClient())
-            //    {
-            //        string content = client.DownloadString(url);
-            //        System.Diagnostics.Debug.WriteLine(content);
-            //    }
-
-            //    var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(downloadPath);
-            //    StorageFile destinationFile = await folder.CreateFileAsync(info.title + ".webm");
-
-            //    BackgroundDownloader downloader = new BackgroundDownloader();
-            //    DownloadOperation download = downloader.CreateDownload(source, destinationFile);
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("[EXCEPTION]" + ex);
-            //}
+            // working but slow
+            //
+            byte[] buffer = await _http.GetByteArrayAsync(uri);
+            System.Diagnostics.Debug.WriteLine("BYFER => " + buffer);
+            using (Stream stream = await destination.OpenStreamForWriteAsync())
+            {
+                await stream.WriteAsync(buffer, 0, buffer.Length);
+                await destination.RenameAsync(info.title + ".mp3");
+            }
         }
 
         /// <summary>
