@@ -10,9 +10,14 @@ using System.Web;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using YTExtractor.Extensions;
 using System.Diagnostics;
 using AngleSharp.Dom;
+using System.Collections.Generic;
+using Windows.Foundation.Collections;
+using System.Runtime.InteropServices;
+using System.Xml.Schema;
 
 namespace YTExtractor
 {
@@ -168,13 +173,9 @@ namespace YTExtractor
             Stream audioStream = await GetAudioStreamAsync(videoId);
 
             await audioStream.CopyToAsync(outputStream);
+            outputStream.Dispose();
 
             await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
-
-            // Добавим нашему файлу несколько свойств (название, исполнитель, ...)
-            var tfile = TagLib.File.Create(outputFile.Path);
-            tfile.Tag.Title = info.Title;
-
         }
 
         /// <summary>
@@ -195,7 +196,7 @@ namespace YTExtractor
         /// <returns></returns>
         public async Task<Stream> GetOutputStream(StorageFile dest)
         {
-            Stream dstream = await dest.OpenStreamForWriteAsync();
+            Stream dstream = (await dest.OpenAsync(FileAccessMode.ReadWrite)).AsStream();
             return dstream;
         }
 
