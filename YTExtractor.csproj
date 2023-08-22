@@ -21,7 +21,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +123,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyMediaStream.cs" />
     <Compile Include="PlaylistData.cs" />
     <Compile Include="PlaylistFoundDialogue.xaml.cs">
       <DependentUpon>PlaylistFoundDialogue.xaml</DependentUpon>
@@ -131,6 +132,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlEx.cs" />
     <Compile Include="VideoData.cs" />
     <Compile Include="YTAudioExtractor.cs" />
   </ItemGroup>
@@ -169,6 +171,9 @@
     </PackageReference>
     <PackageReference Include="Google.Apis.YouTube.v3">
       <Version>1.61.0.3141</Version>
+    </PackageReference>
+    <PackageReference Include="IndexRange">
+      <Version>1.0.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>

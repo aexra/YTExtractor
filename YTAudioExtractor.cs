@@ -1,19 +1,15 @@
 ﻿using System.Threading.Tasks;
-
 using YoutubeExplode;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
-
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System;
 using System.IO;
 using System.Linq;
 using System.Web;
-
 using Syroot.Windows.IO;
-
 using NReco.VideoConverter;
 using System.Linq.Expressions;
 using YTExtractor;
@@ -28,8 +24,11 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Shapes;
 using System.Net.Http;
+using Utils;
+using System.Buffers;
+using System.Diagnostics;
 
-namespace ConsoleApp1
+namespace YTExtractor
 {
     internal class YTAudioExtractor
     {
@@ -152,7 +151,7 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task Extract(string videoId, IProgress<int> progres = null)
+        public async Task Extract(string videoId, IProgress<int> progress = null)
         {
             var info = GetVideoInfo(videoId);
             var url = await GetAudioUrlAsync(videoId);
@@ -161,13 +160,21 @@ namespace ConsoleApp1
 
             // working but slow
             //
-            byte[] buffer = await _http.GetByteArrayAsync(uri);
-            System.Diagnostics.Debug.WriteLine("BYFER => " + buffer);
-            using (Stream stream = await destination.OpenStreamForWriteAsync())
-            {
-                await stream.WriteAsync(buffer, 0, buffer.Length);
-                await destination.RenameAsync(info.title + ".mp3");
-            }
+            //byte[] buffer = await _http.GetByteArrayAsync(uri);
+            //System.Diagnostics.Debug.WriteLine("BYFER => " + buffer);
+            //using (Stream stream = await destination.OpenStreamForWriteAsync())
+            //{
+            //    await stream.WriteAsync(buffer, 0, buffer.Length);
+            //    await destination.RenameAsync(info.title + ".mp3");
+            //}
+
+            // attempt 2
+            //
+            var streamInfo = await GetAudioStreamAsync(videoId);
+            var stream = new MyMediaStream(_http, streamInfo);
+            await stream.InitializeAsync();
+            Stream dstream = await destination.OpenStreamForWriteAsync();
+            await stream.CopyToAsync(dstream);
         }
 
         /// <summary>

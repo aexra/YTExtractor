@@ -2,7 +2,7 @@
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 
-namespace ConsoleApp1
+namespace YTExtractor
 {
     internal class PlaylistData
     {
