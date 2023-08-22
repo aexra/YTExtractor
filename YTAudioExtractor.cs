@@ -227,7 +227,7 @@ namespace YTExtractor
             {
                 PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
                 request.PlaylistId = id;
-
+                request.MaxResults = 50;
                 PlaylistItemListResponse response;
                 do
                 {
@@ -240,7 +240,6 @@ namespace YTExtractor
                 }
                 while (response.NextPageToken is not null);
 
-                Debug.WriteLine("IDS FOUND: " + playlistData.ids.Count());
                 playlistData.n = (int)response.PageInfo.TotalResults;
             }
             return playlistData;
