@@ -165,7 +165,7 @@ namespace YTExtractor
 
             await audioStream.CopyToAsync(outputStream);
 
-            await outputFile.RenameAsync(info.title + ".mp3");
+            await outputFile.RenameAsync(info.title + ".mp3", NameCollisionOption.GenerateUniqueName);
         }
 
         /// <summary>
@@ -175,8 +175,7 @@ namespace YTExtractor
         /// <returns></returns>
         public async Task<StorageFile> MakeOutputFile(string title)
         {
-            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title + ".mp3", CreationCollisionOption.GenerateUniqueName);
-            await destination.RenameAsync(title);
+            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title, CreationCollisionOption.GenerateUniqueName);
             return destination;
         }
 
