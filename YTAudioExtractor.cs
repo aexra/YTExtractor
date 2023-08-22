@@ -10,6 +10,7 @@ using System.Web;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
+using YTExtractor.Extensions;
 
 namespace YTExtractor
 {
@@ -31,7 +32,7 @@ namespace YTExtractor
         /// <summary>
         /// Директория сохранения загруженных файлов
         /// </summary>
-        private string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
+        public string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
 
         /// <summary>
         /// Конструктор класса YTAudioExtractor
@@ -158,14 +159,15 @@ namespace YTExtractor
         {
             VideoData info = GetVideoInfo(videoId);
 
-            StorageFile outputFile = await MakeOutputFile(info.title);
+            string fileName = info.title.ReplaceInvalidChars();
+            StorageFile outputFile = await MakeOutputFile(fileName);
 
             Stream outputStream = await GetOutputStream(outputFile);
             Stream audioStream = await GetAudioStreamAsync(videoId);
 
             await audioStream.CopyToAsync(outputStream);
 
-            await outputFile.RenameAsync(info.title + ".mp3", NameCollisionOption.GenerateUniqueName);
+            await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
         }
 
         /// <summary>
@@ -223,14 +225,14 @@ namespace YTExtractor
             }
             {
                 PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
-                request.Id = id;
+                request.PlaylistId = id;
+                var response = request.Execute();
+                //foreach (var video in response.Items)
+                //{
+                //    playlistData.ids.Add(video.Id);
+                //}
 
-                foreach (var video in request.Execute().Items)
-                {
-                    playlistData.ids.Add(video.Id);
-                }
-
-                playlistData.n = playlistData.ids.Count();
+                playlistData.n = (int)response.PageInfo.TotalResults;
             }
             return playlistData;
         }

@@ -12,5 +12,10 @@ namespace YTExtractor
         public string channelThumbnail;
         public string channelId;
         public int n;
+
+        public PlaylistData()
+        {
+            ids = new List<string>();
+        }
     }
 }

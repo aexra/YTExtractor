@@ -105,8 +105,9 @@ namespace YTExtractor
                 // (including other sub-folder contents)
                 //Windows.Storage.AccessCache.StorageApplicationPermissions.
                 //FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                System.Diagnostics.Debug.WriteLine("OLD FOLDER:  " + extractor.downloadPath);
+                System.Diagnostics.Debug.WriteLine("NEW FOLDER:  " + folder.Path);
                 extractor.SetDownloadPath(folder.Path);
-                System.Diagnostics.Debug.WriteLine(folder.Path);
             }
         }
 
@@ -167,15 +168,15 @@ namespace YTExtractor
 
         private async Task DownloadPlaylist(string url)
         {
-            PlaylistData p = extractor.GetPlaylistData(url);
+            PlaylistData pd = extractor.GetPlaylistData(url);
             PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
-                p.title,
-                p.thumbnail,
-                p.channelTitle,
-                p.channelThumbnail
+                pd.title,
+                pd.thumbnail,
+                pd.channelTitle,
+                pd.channelThumbnail
             )
             {
-                Title = $"Обнаружен плейлист",
+                Title = $"Обнаружен плейлист - {pd.n} видео",
                 PrimaryButtonText = "Извлечь все",
                 SecondaryButtonText = "Отмена",
             };
@@ -202,7 +203,7 @@ namespace YTExtractor
                 pd.channelThumbnail
             )
             {
-                Title = $"Обнаружен плейлист",
+                Title = $"Обнаружен плейлист - {pd.n} видео",
                 PrimaryButtonText = "Извлечь все",
                 SecondaryButtonText = "Извлечь только из этого видео",
             };
