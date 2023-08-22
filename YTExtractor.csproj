@@ -123,7 +123,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyMediaStream.cs" />
     <Compile Include="PlaylistData.cs" />
     <Compile Include="PlaylistFoundDialogue.xaml.cs">
       <DependentUpon>PlaylistFoundDialogue.xaml</DependentUpon>
@@ -132,7 +131,6 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UrlEx.cs" />
     <Compile Include="VideoData.cs" />
     <Compile Include="YTAudioExtractor.cs" />
   </ItemGroup>

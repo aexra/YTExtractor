@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using YoutubeExplode;
-using YoutubeExplode.Playlists;
-using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
@@ -9,24 +7,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Web;
-using Syroot.Windows.IO;
-using NReco.VideoConverter;
-using System.Linq.Expressions;
-using YTExtractor;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
-using KnownFolders = Syroot.Windows.IO.KnownFolders;
-using System.Threading;
-using System.Net;
-using Windows.Networking.BackgroundTransfer;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Popups;
-using Windows.UI.Xaml.Shapes;
-using System.Net.Http;
-using Utils;
-using System.Buffers;
-using System.Diagnostics;
 
 namespace YTExtractor
 {
@@ -34,11 +17,7 @@ namespace YTExtractor
     {
         private YouTubeService youtubeService;
         private YoutubeClient youtubeClient;
-        private HttpClient _http;
-        //private HttpClientHandler _handler;
         private string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
-        private string tmpPath = "tmp";
-        private FFMpegConverter ffmpeg;
 
         public YTAudioExtractor()
         {
@@ -48,13 +27,6 @@ namespace YTExtractor
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
-            //_handler = new HttpClientHandler();
-            //_handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            _http = new HttpClient();
-            //_http.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
-            //_http.DefaultRequestHeaders.Add("Accept-Encoding", "deflate");
-            ffmpeg = new FFMpegConverter();
-            //ffmpeg.FFMpegToolPath = KnownFolders.SavedGames.Path;
         }
 
         /// <summary>
@@ -138,7 +110,7 @@ namespace YTExtractor
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task<IStreamInfo> GetAudioStreamAsync(string videoId)
+        public async Task<IStreamInfo> GetAudioStreamInfoAsync(string videoId)
         {
             if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
             var audioStreams = await youtubeClient.Videos.Streams.GetManifestAsync(videoId).ConfigureAwait(false);
@@ -157,43 +129,11 @@ namespace YTExtractor
             var url = await GetAudioUrlAsync(videoId);
             var uri = new Uri(url);
             StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(info.title, CreationCollisionOption.GenerateUniqueName);
-
-            // working but slow
-            //
-            //byte[] buffer = await _http.GetByteArrayAsync(uri);
-            //System.Diagnostics.Debug.WriteLine("BYFER => " + buffer);
-            //using (Stream stream = await destination.OpenStreamForWriteAsync())
-            //{
-            //    await stream.WriteAsync(buffer, 0, buffer.Length);
-            //    await destination.RenameAsync(info.title + ".mp3");
-            //}
-
-            // attempt 2
-            //
-            var streamInfo = await GetAudioStreamAsync(videoId);
-            var stream = new MyMediaStream(_http, streamInfo);
-            await stream.InitializeAsync();
+            var streamInfo = await GetAudioStreamInfoAsync(videoId);
+            var stream = await youtubeClient.Videos.Streams.GetAsync(streamInfo);
             Stream dstream = await destination.OpenStreamForWriteAsync();
             await stream.CopyToAsync(dstream);
             await destination.RenameAsync(info.title + ".mp3");
-        }
-
-        /// <summary>
-        /// Конвертирует аудио файл формата webm в mp3
-        /// </summary>
-        /// <param name="inputPath">Путь оригинала</param>
-        /// <param name="outputPath">Путь конвертированного файла</param>
-        /// <param name="deleteOriginal">Нужно ли удалять оригинал</param>
-        public void WebmToMp3(string inputPath, string outputPath, bool deleteOriginal = true)
-        {
-            ffmpeg.ConvertMedia(inputPath, outputPath, "mp3");
-            if (deleteOriginal)
-            {
-                if (File.Exists(inputPath))
-                {
-                    File.Delete(inputPath);
-                }
-            }
         }
 
         /// <summary>
@@ -203,19 +143,9 @@ namespace YTExtractor
         public PlaylistData GetPlaylistData(string url)
         {
             var playlistData = new PlaylistData();
-            //var playlist = await youtubeClient.Playlists.GetAsync(url);
-            //playlistData.playlistInfo = playlist;
-            //await foreach (var batch in youtubeClient.Playlists.GetVideoBatchesAsync(url))
-            //{
-            //    foreach (var video in batch.Items)
-            //    {
-            //        playlistData.vids.Append<PlaylistVideo>(video);
-            //    }
-            //}
             NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(url).Query);
             string id = parsed["list"].ToString();
             if (id == "LL") return null;
-            //id = id.Substring(2);
             PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
             request.Id = id;
             var response = request.Execute().Items.First().Snippet;
