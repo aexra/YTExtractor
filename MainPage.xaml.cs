@@ -185,8 +185,6 @@ namespace YTExtractor
                 PrimaryButtonText = "Извлечь все",
                 SecondaryButtonText = "Отмена",
             };
-            Download.IsEnabled = false;
-            UrlBox.Text = string.Empty;
             var result = await pfd.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -219,19 +217,16 @@ namespace YTExtractor
                     PrimaryButtonText = "Извлечь все",
                     SecondaryButtonText = "Извлечь только из этого видео",
                 };
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
                 var result = await vfip.ShowAsync();
                 if (result == ContentDialogResult.Primary)
-                    await DownloadPlaylist(url);
+                    foreach (string id in pd.Ids)
+                        await extractor.Extract(id);
                 else
                     await DownloadOne(url);
             }
             catch (Exception)
             {
                 System.Diagnostics.Debug.WriteLine("Плейлист недоступен - форсирую загрузку конкретного видео");
-                Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
                 await DownloadOne(url);
             }
         }
