@@ -10,7 +10,6 @@ using System.Web;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
-using Windows.UI.WindowManagement;
 
 namespace YTExtractor
 {
