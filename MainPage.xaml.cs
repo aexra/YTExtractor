@@ -209,30 +209,41 @@ namespace YTExtractor
 
         private async Task DownloadInPlaylist(string url)
         {
-            PlaylistData pd = extractor.GetPlaylistData(url);
-            if (pd == null)
+            try
             {
-                await DownloadOne(url);
-                return;
+                PlaylistData pd = extractor.GetPlaylistData(url);
+
+                if (pd == null)
+                {
+                    await DownloadOne(url);
+                    return;
+                }
+                PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
+                    pd.title,
+                    pd.thumbnail,
+                    pd.channelTitle,
+                    pd.channelThumbnail
+                )
+                {
+                    Title = $"Обнаружен плейлист - {pd.n} видео",
+                    PrimaryButtonText = "Извлечь все",
+                    SecondaryButtonText = "Извлечь только из этого видео",
+                };
+                Download.IsEnabled = false;
+                UrlBox.Text = string.Empty;
+                var result = await vfip.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                    await DownloadPlaylist(url);
+                else
+                    await DownloadOne(url);
             }
-            PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
-                pd.title,
-                pd.thumbnail,
-                pd.channelTitle,
-                pd.channelThumbnail
-            )
+            catch (Exception)
             {
-                Title = $"Обнаружен плейлист - {pd.n} видео",
-                PrimaryButtonText = "Извлечь все",
-                SecondaryButtonText = "Извлечь только из этого видео",
-            };
-            Download.IsEnabled = false;
-            UrlBox.Text = string.Empty;
-            var result = await vfip.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-                await DownloadPlaylist(url);
-            else
+                System.Diagnostics.Debug.WriteLine("Плейлист недоступен - форсирую загрузку конкретного видео");
+                Download.IsEnabled = false;
+                UrlBox.Text = string.Empty;
                 await DownloadOne(url);
+            }
         }
 
         private async Task DownloadOne(string url)
