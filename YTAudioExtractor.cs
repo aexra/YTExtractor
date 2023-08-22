@@ -12,6 +12,7 @@ using System.Collections.Specialized;
 using Windows.Storage;
 using YTExtractor.Extensions;
 using System.Diagnostics;
+using AngleSharp.Dom;
 
 namespace YTExtractor
 {
@@ -194,15 +195,23 @@ namespace YTExtractor
         }
 
         /// <summary>
-        /// Возвращает информацию о плейлисте по введенной ссылке
+        /// Возвращает информацию о плейлисте по введенной ссылке/id
         /// </summary>
         /// <returns></returns>
-        public PlaylistData GetPlaylistData(string url)
+        public PlaylistData GetPlaylistData(string playlistId)
         {
-            var playlistData = new PlaylistData();
+            string id;
+            if (IsUrl(playlistId))
+            {
+                NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(playlistId).Query);
+                id = parsed["list"].ToString();
+            }
+            else
+            {
+                id = playlistId;
+            }
 
-            NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(url).Query);
-            string id = parsed["list"].ToString();
+            var playlistData = new PlaylistData();
 
             if (id == "LL") return null;
 
