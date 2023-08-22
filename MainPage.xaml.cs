@@ -71,7 +71,7 @@ namespace YTExtractor
         private async Task InitiateDownloadSequence()
         {
             string url = UrlBox.Text;
-
+            ClearUrlBox();
             try
             {
                 // это нормальная ссылка?
@@ -125,8 +125,6 @@ namespace YTExtractor
                             Content = "Бака, это не ссылка!",
                             PrimaryButtonText = "Я бака"
                         };
-                        Download.IsEnabled = false;
-                        UrlBox.Text = string.Empty;
                         await bakaMsg.ShowAsync();
                         return;
                     }
@@ -137,8 +135,6 @@ namespace YTExtractor
                             Content = "Бака, это не ссылка на ютуб!",
                             PrimaryButtonText = "Я бака"
                         };
-                        Download.IsEnabled = false;
-                        UrlBox.Text = string.Empty;
                         await bakaMsg.ShowAsync();
                         return;
                     }
@@ -149,8 +145,6 @@ namespace YTExtractor
                             Content = $"Бака, я не нашел плейлиста по твоей ссылке!\n\r{url}",
                             PrimaryButtonText = "Я бака"
                         };
-                        Download.IsEnabled = false;
-                        UrlBox.Text = string.Empty;
                         await bakaMsg.ShowAsync();
                         return;
                     }
@@ -161,8 +155,6 @@ namespace YTExtractor
                             Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
                             PrimaryButtonText = "Я бака"
                         };
-                        Download.IsEnabled = false;
-                        UrlBox.Text = string.Empty;
                         await bakaMsg.ShowAsync();
                         return;
                     }
@@ -170,11 +162,9 @@ namespace YTExtractor
                     {
                         ContentDialog bakaMsg = new ContentDialog()
                         {
-                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку! Возможно плейлист или видео запривачен(о), подумай над своим поведением!\n\nТвоя ссылка:\n{url}",
+                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}",
                             PrimaryButtonText = "Я бака"
                         };
-                        Download.IsEnabled = false;
-                        UrlBox.Text = string.Empty;
                         await bakaMsg.ShowAsync();
                         return;
                     }
@@ -265,6 +255,11 @@ namespace YTExtractor
             var res = await fv.ShowAsync();
             if (res == ContentDialogResult.Primary)
                 await extractor.Extract(url);
+        }
+
+        private void ClearUrlBox()
+        {
+            UrlBox.Text = string.Empty;
         }
     }
 }
