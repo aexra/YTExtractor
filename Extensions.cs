@@ -14,6 +14,7 @@ namespace YTExtractor.Extensions
         /// Заменяет запрещенные символы в пути на выбранный знак
         /// </summary>
         /// <param name="filename"></param>
+        /// <param name="replacer"></param>
         /// <returns></returns>
         public static string ReplaceInvalidChars(this string filename, string replacer = "")
         {
