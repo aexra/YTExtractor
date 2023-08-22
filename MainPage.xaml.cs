@@ -175,13 +175,13 @@ namespace YTExtractor
         {
             PlaylistData pd = extractor.GetPlaylistData(url);
             PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
-                pd.title,
-                pd.thumbnail,
-                pd.channelTitle,
-                pd.channelThumbnail
+                pd.Title,
+                pd.Thumbnail,
+                pd.ChannelTitle,
+                pd.ChannelThumbnail
             )
             {
-                Title = $"Обнаружен плейлист - {pd.n} видео",
+                Title = $"Обнаружен плейлист - {pd.Count} видео",
                 PrimaryButtonText = "Извлечь все",
                 SecondaryButtonText = "Отмена",
             };
@@ -190,7 +190,7 @@ namespace YTExtractor
             var result = await pfd.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                foreach (string id in pd.ids)
+                foreach (string id in pd.Ids)
                 {
                     await extractor.Extract(id);
                 }
@@ -209,13 +209,13 @@ namespace YTExtractor
                     return;
                 }
                 PlaylistFoundDialogue vfip = new PlaylistFoundDialogue(
-                    pd.title,
-                    pd.thumbnail,
-                    pd.channelTitle,
-                    pd.channelThumbnail
+                    pd.Title,
+                    pd.Thumbnail,
+                    pd.ChannelTitle,
+                    pd.ChannelThumbnail
                 )
                 {
-                    Title = $"Обнаружен плейлист - {pd.n} видео",
+                    Title = $"Обнаружен плейлист - {pd.Count} видео",
                     PrimaryButtonText = "Извлечь все",
                     SecondaryButtonText = "Извлечь только из этого видео",
                 };
@@ -240,10 +240,10 @@ namespace YTExtractor
         {
             var video = extractor.GetVideoInfo(url);
             PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
-                video.title,
-                video.thumbnail,
-                video.channelTitle,
-                video.channelThumbnail
+                video.Title,
+                video.Thumbnail,
+                video.ChannelTitle,
+                video.ChannelThumbnail
             )
             {
                 Title = $"Найдено видео",

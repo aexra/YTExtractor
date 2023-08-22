@@ -101,14 +101,14 @@ namespace YTExtractor
             VideoListResponse response = listRequest.Execute();
             var r = response.Items.First().Snippet;
             VideoData vd = new VideoData();
-            vd.id = videoId;
-            vd.title = r.Title;
-            vd.thumbnail = r.Thumbnails.High.Url;
-            vd.channelId = r.ChannelId;
-            vd.channelTitle = r.ChannelTitle;
+            vd.Id = videoId;
+            vd.Title = r.Title;
+            vd.Thumbnail = r.Thumbnails.High.Url;
+            vd.ChannelId = r.ChannelId;
+            vd.ChannelTitle = r.ChannelTitle;
             ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
             request.Id = r.ChannelId;
-            vd.channelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
+            vd.ChannelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
             return vd;
         }
 
@@ -161,7 +161,7 @@ namespace YTExtractor
         {
             VideoData info = GetVideoInfo(videoId);
 
-            string fileName = info.title.ReplaceInvalidChars();
+            string fileName = info.Title.ReplaceInvalidChars();
             StorageFile outputFile = await MakeOutputFile(fileName);
 
             Stream outputStream = await GetOutputStream(outputFile);
@@ -170,6 +170,11 @@ namespace YTExtractor
             await audioStream.CopyToAsync(outputStream);
 
             await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
+
+            // Добавим нашему файлу несколько свойств (название, исполнитель, ...)
+            var tfile = TagLib.File.Create(outputFile.Path);
+            tfile.Tag.Title = info.Title;
+
         }
 
         /// <summary>
@@ -221,17 +226,17 @@ namespace YTExtractor
 
                 var response = request.Execute().Items.First().Snippet;
 
-                playlistData.title = response.Title;
-                playlistData.thumbnail = response.Thumbnails.High.Url;
-                playlistData.description = response.Description;
-                playlistData.channelId = response.ChannelId;
-                playlistData.channelTitle = response.ChannelTitle;
+                playlistData.Title = response.Title;
+                playlistData.Thumbnail = response.Thumbnails.High.Url;
+                playlistData.Description = response.Description;
+                playlistData.ChannelId = response.ChannelId;
+                playlistData.ChannelTitle = response.ChannelTitle;
             }
             {
                 ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
-                request.Id = playlistData.channelId;
+                request.Id = playlistData.ChannelId;
 
-                playlistData.channelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
+                playlistData.ChannelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
             }
             {
                 PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
@@ -243,13 +248,13 @@ namespace YTExtractor
                     response = request.Execute();
 
                     foreach (var video in response.Items)
-                        playlistData.ids.Add(video.Snippet.ResourceId.VideoId);
+                        playlistData.Ids.Add(video.Snippet.ResourceId.VideoId);
 
                     request.PageToken = response.NextPageToken;
                 }
                 while (response.NextPageToken is not null);
 
-                playlistData.n = (int)response.PageInfo.TotalResults;
+                playlistData.Count = (int)response.PageInfo.TotalResults;
             }
             return playlistData;
         }

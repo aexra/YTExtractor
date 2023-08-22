@@ -2,12 +2,12 @@
 {
     internal class VideoData
     {
-        public string channelTitle;
-        public string channelId;
-        public string channelThumbnail;
-        public string id;
-        public string title;
-        public string thumbnail;
+        public string ChannelTitle;
+        public string ChannelId;
+        public string ChannelThumbnail;
+        public string Id;
+        public string Title;
+        public string Thumbnail;
 
         public VideoData() { }
     }
