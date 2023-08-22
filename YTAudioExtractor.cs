@@ -11,6 +11,7 @@ using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
 using YTExtractor.Extensions;
+using System.Diagnostics;
 
 namespace YTExtractor
 {
@@ -226,12 +227,20 @@ namespace YTExtractor
             {
                 PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
                 request.PlaylistId = id;
-                var response = request.Execute();
-                //foreach (var video in response.Items)
-                //{
-                //    playlistData.ids.Add(video.Id);
-                //}
 
+                PlaylistItemListResponse response;
+                do
+                {
+                    response = request.Execute();
+
+                    foreach (var video in response.Items)
+                        playlistData.ids.Add(video.Id);
+
+                    request.PageToken = response.NextPageToken;
+                }
+                while (response.NextPageToken is not null);
+
+                Debug.WriteLine("IDS FOUND: " + playlistData.ids.Count());
                 playlistData.n = (int)response.PageInfo.TotalResults;
             }
             return playlistData;

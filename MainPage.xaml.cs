@@ -101,10 +101,6 @@ namespace YTExtractor
             Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
-                // Application now has read/write access to all contents in the picked folder
-                // (including other sub-folder contents)
-                //Windows.Storage.AccessCache.StorageApplicationPermissions.
-                //FutureAccessList.AddOrReplace("PickedFolderToken", folder);
                 System.Diagnostics.Debug.WriteLine("OLD FOLDER:  " + extractor.downloadPath);
                 System.Diagnostics.Debug.WriteLine("NEW FOLDER:  " + folder.Path);
                 extractor.SetDownloadPath(folder.Path);
@@ -184,8 +180,12 @@ namespace YTExtractor
             UrlBox.Text = string.Empty;
             var result = await pfd.ShowAsync();
             if (result == ContentDialogResult.Primary)
-            { }
-                // extract all
+            {
+                foreach (string id in pd.ids)
+                {
+                    await extractor.Extract(id);
+                }
+            }
         }
 
         private async Task DownloadInPlaylist(string url)
