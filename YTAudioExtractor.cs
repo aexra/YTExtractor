@@ -234,7 +234,7 @@ namespace YTExtractor
                     response = request.Execute();
 
                     foreach (var video in response.Items)
-                        playlistData.ids.Add(video.Id);
+                        playlistData.ids.Add(video.Snippet.ResourceId.VideoId);
 
                     request.PageToken = response.NextPageToken;
                 }
