@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using YoutubeExplode.Playlists;
-using YoutubeExplode.Videos;
-
-namespace YTExtractor
+﻿namespace YTExtractor
 {
     internal class PlaylistData
     {
-        //public Playlist playlistInfo;
-        //public List<PlaylistVideo> vids = new List<PlaylistVideo>();
+        public string[] ids;
         public string title;
         public string description;
         public string thumbnail;

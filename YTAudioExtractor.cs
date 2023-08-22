@@ -10,6 +10,7 @@ using System.Web;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
+using Windows.UI.WindowManagement;
 
 namespace YTExtractor
 {
@@ -119,21 +120,59 @@ namespace YTExtractor
         }
 
         /// <summary>
+        /// Вовзаращает прямой поток аудио по ссылке/id видео
+        /// </summary>
+        /// <param name="videoId"></param>
+        /// <returns></returns>
+        public async Task<Stream> GetAudioStreamAsync(string videoId)
+        {
+            if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
+            var audioStreams = await youtubeClient.Videos.Streams.GetManifestAsync(videoId).ConfigureAwait(false);
+            var audioStreamInfo = audioStreams.GetAudioOnlyStreams().GetWithHighestBitrate();
+            var stream = await youtubeClient.Videos.Streams.GetAsync(audioStreamInfo);
+            return stream;
+        }
+
+        /// <summary>
         /// Скачивает аудио в формате mp3 из видео по переданной ссылке/id
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
         public async Task Extract(string videoId, IProgress<int> progress = null)
         {
-            var info = GetVideoInfo(videoId);
-            var url = await GetAudioUrlAsync(videoId);
-            var uri = new Uri(url);
-            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(info.title, CreationCollisionOption.GenerateUniqueName);
-            var streamInfo = await GetAudioStreamInfoAsync(videoId);
-            var stream = await youtubeClient.Videos.Streams.GetAsync(streamInfo);
-            Stream dstream = await destination.OpenStreamForWriteAsync();
-            await stream.CopyToAsync(dstream);
-            await destination.RenameAsync(info.title + ".mp3");
+            VideoData info = GetVideoInfo(videoId);
+
+            StorageFile outputFile = await MakeOutputFile(info.title);
+
+            Stream outputStream = await GetOutputStream(outputFile);
+            Stream audioStream = await GetAudioStreamAsync(videoId);
+
+            await audioStream.CopyToAsync(outputStream);
+
+            await outputFile.RenameAsync(info.title + ".mp3");
+        }
+
+        /// <summary>
+        /// Создает новый файл в директории загрузки downloadPath для записи из потока аудио
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public async Task<StorageFile> MakeOutputFile(string title)
+        {
+            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title + ".mp3", CreationCollisionOption.GenerateUniqueName);
+            await destination.RenameAsync(title);
+            return destination;
+        }
+
+        /// <summary>
+        /// Открывает выбранный файл для записи и возвращает поток
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        public async Task<Stream> GetOutputStream(StorageFile dest)
+        {
+            Stream dstream = await dest.OpenStreamForWriteAsync();
+            return dstream;
         }
 
         /// <summary>
