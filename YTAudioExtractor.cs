@@ -136,7 +136,7 @@ namespace YTExtractor
         }
 
         /// <summary>
-        /// Вовзаращает прямой поток аудио по ссылке/id видео
+        /// Вовзаращает прямой поток аудио по переданной ссылке/id
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
