@@ -13,12 +13,29 @@ using Windows.Storage;
 
 namespace YTExtractor
 {
+    /// <summary>
+    /// Обобщенный класс, выполняющий всю работу по загрузке аудиофайлов
+    /// </summary>
     internal class YTAudioExtractor
     {
+        /// <summary>
+        /// Объект для работы с запросами через Google API
+        /// </summary>
         private YouTubeService youtubeService;
+
+        /// <summary>
+        /// Объект для работы с библиотекой YoutubeExplode
+        /// </summary>
         private YoutubeClient youtubeClient;
+
+        /// <summary>
+        /// Директория сохранения загруженных файлов
+        /// </summary>
         private string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
 
+        /// <summary>
+        /// Конструктор класса YTAudioExtractor
+        /// </summary>
         public YTAudioExtractor()
         {
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
