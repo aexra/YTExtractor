@@ -11,7 +11,7 @@ namespace YTExtractor
     public sealed partial class MainPage : Page
     {
         YTAudioExtractor extractor;
-        enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound};
+        enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound, UnknownError};
 
         public MainPage()
         {
@@ -72,24 +72,31 @@ namespace YTExtractor
         {
             string url = UrlBox.Text;
 
-            // это нормальная ссылка?
-            if (!extractor.IsUrl(url))
-                await BadUrlWarning(url, WarningType.InvalidUrl);
+            try
+            {
+                // это нормальная ссылка?
+                if (!extractor.IsUrl(url))
+                    await WarningDialog(url, WarningType.InvalidUrl);
 
-            // это (почти) ссылка на ютуб?
-            else if (!url.Contains("youtu"))
-                await BadUrlWarning(url, WarningType.NotYTUrl);
+                // это (почти) ссылка на ютуб?
+                else if (!url.Contains("youtu"))
+                    await WarningDialog(url, WarningType.NotYTUrl);
 
-            // это ссылка на плейлист?
-            else if (url.Contains("playlist"))
-                await DownloadPlaylist(url);
+                // это ссылка на плейлист?
+                else if (url.Contains("playlist"))
+                    await DownloadPlaylist(url);
 
-            // это видео состоит в плейлисте?
-            else if (url.Contains("&list="))
-                await DownloadInPlaylist(url);
-            
-            // а иначе это просто ссылка на видео
-            else await DownloadOne(url);
+                // это видео состоит в плейлисте?
+                else if (url.Contains("&list="))
+                    await DownloadInPlaylist(url);
+
+                // а иначе это просто ссылка на видео
+                else await DownloadOne(url);
+            }
+            catch (Exception)
+            {
+                await WarningDialog(url, WarningType.UnknownError);
+            }
         }
 
         private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
@@ -107,7 +114,7 @@ namespace YTExtractor
             }
         }
 
-        private async Task BadUrlWarning(string url, WarningType t)
+        private async Task WarningDialog(string url, WarningType t)
         {
             switch (t)
             {
@@ -152,6 +159,18 @@ namespace YTExtractor
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        Download.IsEnabled = false;
+                        UrlBox.Text = string.Empty;
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.UnknownError:
+                    {
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку! Возможно плейлист или видео запривачен(о), подумай над своим поведением!\n\nТвоя ссылка:\n{url}",
                             PrimaryButtonText = "Я бака"
                         };
                         Download.IsEnabled = false;
