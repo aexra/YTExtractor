@@ -197,20 +197,41 @@ namespace YTExtractor
         public PlaylistData GetPlaylistData(string url)
         {
             var playlistData = new PlaylistData();
+
             NameValueCollection parsed = System.Web.HttpUtility.ParseQueryString(new Uri(url).Query);
             string id = parsed["list"].ToString();
+
             if (id == "LL") return null;
-            PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
-            request.Id = id;
-            var response = request.Execute().Items.First().Snippet;
-            playlistData.title = response.Title;
-            playlistData.thumbnail = response.Thumbnails.High.Url;
-            playlistData.description = response.Description;
-            playlistData.channelId = response.ChannelId;
-            playlistData.channelTitle = response.ChannelTitle;
-            ChannelsResource.ListRequest req = youtubeService.Channels.List("snippet");
-            req.Id = response.ChannelId;
-            playlistData.channelThumbnail = req.Execute().Items.First().Snippet.Thumbnails.High.Url;
+
+            { 
+                PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
+                request.Id = id;
+
+                var response = request.Execute().Items.First().Snippet;
+
+                playlistData.title = response.Title;
+                playlistData.thumbnail = response.Thumbnails.High.Url;
+                playlistData.description = response.Description;
+                playlistData.channelId = response.ChannelId;
+                playlistData.channelTitle = response.ChannelTitle;
+            }
+            {
+                ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
+                request.Id = playlistData.channelId;
+
+                playlistData.channelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
+            }
+            {
+                PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
+                request.Id = id;
+
+                foreach (var video in request.Execute().Items)
+                {
+                    playlistData.ids.Add(video.Id);
+                }
+
+                playlistData.n = playlistData.ids.Count();
+            }
             return playlistData;
         }
 

@@ -1,14 +1,16 @@
-﻿namespace YTExtractor
+﻿using System.Collections.Generic;
+
+namespace YTExtractor
 {
     internal class PlaylistData
     {
-        public string[] ids;
+        public List<string> ids;
         public string title;
         public string description;
         public string thumbnail;
-        public string n;
         public string channelTitle;
         public string channelThumbnail;
         public string channelId;
+        public int n;
     }
 }
