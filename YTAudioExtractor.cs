@@ -175,6 +175,7 @@ namespace YTExtractor
             await stream.InitializeAsync();
             Stream dstream = await destination.OpenStreamForWriteAsync();
             await stream.CopyToAsync(dstream);
+            await destination.RenameAsync(info.title + ".mp3");
         }
 
         /// <summary>
