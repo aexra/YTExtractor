@@ -26,6 +26,9 @@ namespace YTExtractor
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
+
+            // warmup extractor
+            extractor.GetVideoInfo("https://youtu.be/GG7Yb0tg0rw?si=WH11zdXpCjo4Jmkv");
         }
 
         private void OnUrlChanged(object sender, TextChangedEventArgs e)
@@ -77,8 +80,8 @@ namespace YTExtractor
             string url = UrlBox.Text;
             Debug.Log($"Запущена последовательность загрузки для запроса: [{url}]");
             ClearUrlBox();
-            try
-            {
+            //try
+            //{
                 // это нормальная ссылка?
                 if (!extractor.IsUrl(url))
                     await WarningDialog(url, WarningType.InvalidUrl);
@@ -97,11 +100,11 @@ namespace YTExtractor
 
                 // а иначе это просто ссылка на видео
                 else await DownloadOne(url);
-            }
-            catch (Exception)
-            {
-                await WarningDialog(url, WarningType.UnknownError);
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    await WarningDialog(url, WarningType.UnknownError);
+            //}
         }
 
         private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)

@@ -172,6 +172,9 @@
     <PackageReference Include="Google.Apis.YouTube.v3">
       <Version>1.61.0.3141</Version>
     </PackageReference>
+    <PackageReference Include="IndexRange">
+      <Version>1.0.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
     </PackageReference>

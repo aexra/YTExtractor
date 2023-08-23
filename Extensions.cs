@@ -18,7 +18,10 @@ namespace YTExtractor.Extensions
         /// <returns></returns>
         public static string ReplaceInvalidChars(this string filename, string replacer = "")
         {
-            return string.Join(replacer, filename.Split(Path.GetInvalidFileNameChars()));
+            var str = string.Join(replacer, filename.Split(Path.GetInvalidFileNameChars()));
+            if (str[^1] == '.')
+                str = str[..^1];
+            return str;
         }
     }
 }

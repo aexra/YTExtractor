@@ -181,8 +181,7 @@ namespace YTExtractor
         /// <returns></returns>
         public async Task<StorageFile> MakeOutputFile(string title)
         {
-            StorageFile destination = await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title, CreationCollisionOption.GenerateUniqueName);
-            return destination;
+            return await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title, CreationCollisionOption.GenerateUniqueName);
         }
 
         /// <summary>
