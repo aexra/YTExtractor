@@ -101,9 +101,9 @@ namespace YTExtractor
                 // а иначе это просто ссылка на видео
                 else await DownloadOne(url);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                await WarningDialog(url, WarningType.UnknownError);
+                await WarningDialog(url, WarningType.UnknownError, e);
             }
         }
 
@@ -124,7 +124,7 @@ namespace YTExtractor
             }
         }
 
-        private async Task WarningDialog(string url, WarningType t)
+        private async Task WarningDialog(string url, WarningType t, Exception e = null)
         {
             switch (t)
             {
@@ -177,7 +177,7 @@ namespace YTExtractor
                         Debug.Error($"Вызвана неизвестная ошибка: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
-                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}",
+                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}\n\n\n{e}",
                             PrimaryButtonText = "Я бака"
                         };
                         await bakaMsg.ShowAsync();
