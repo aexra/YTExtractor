@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Apis.YouTube.v3.Data;
+using Google.Apis.YouTube.v3;
+using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Diagnostics;
@@ -199,7 +201,8 @@ namespace YTExtractor
             var result = await pfd.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                foreach (string id in pd.Ids)
+                var ids = extractor.GetPlaylistIds(pd.PlaylistId);
+                foreach (string id in ids)
                 {
                     await extractor.Extract(id);
                 }

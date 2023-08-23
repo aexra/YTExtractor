@@ -12,6 +12,7 @@ using System.Collections.Specialized;
 using Windows.Storage;
 using YTExtractor.Extensions;
 using AngleSharp.Dom;
+using System.Collections.Generic;
 
 namespace YTExtractor
 {
@@ -216,6 +217,8 @@ namespace YTExtractor
 
             if (id == "LL") return null;
 
+            playlistData.PlaylistId = id;
+
             { 
                 PlaylistsResource.ListRequest request = youtubeService.Playlists.List("snippet");
                 request.Id = id;
@@ -237,19 +240,7 @@ namespace YTExtractor
             {
                 PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
                 request.PlaylistId = id;
-                request.MaxResults = 50;
-                PlaylistItemListResponse response;
-                do
-                {
-                    response = request.Execute();
-
-                    foreach (var video in response.Items)
-                        playlistData.Ids.Add(video.Snippet.ResourceId.VideoId);
-
-                    request.PageToken = response.NextPageToken;
-                }
-                while (response.NextPageToken is not null);
-
+                var response = request.Execute();
                 playlistData.Count = (int)response.PageInfo.TotalResults;
             }
             return playlistData;
@@ -262,6 +253,33 @@ namespace YTExtractor
         public void SetDownloadPath(string path)
         {
             downloadPath = path;
+        }
+
+        /// <summary>
+        /// Возвращает список id видео, входящих в плейлист
+        /// </summary>
+        /// <param name="playlistId"></param>
+        /// <returns></returns>
+        public List<string> GetPlaylistIds(string playlistId)
+        {
+            List<string> ids = new List<string>();
+
+            PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List("snippet");
+            request.PlaylistId = playlistId;
+            request.MaxResults = 50;
+            PlaylistItemListResponse response;
+            do
+            {
+                response = request.Execute();
+
+                foreach (var video in response.Items)
+                    ids.Add(video.Snippet.ResourceId.VideoId);
+
+                request.PageToken = response.NextPageToken;
+            }
+            while (response.NextPageToken is not null);
+
+            return ids;
         }
     }
 }

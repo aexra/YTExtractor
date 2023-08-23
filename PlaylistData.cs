@@ -11,6 +11,7 @@ namespace YTExtractor
         public string ChannelTitle;
         public string ChannelThumbnail;
         public string ChannelId;
+        public string PlaylistId;
         public int Count;
 
         public PlaylistData()
