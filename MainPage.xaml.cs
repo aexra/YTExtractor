@@ -72,8 +72,8 @@ namespace YTExtractor
 
         private async Task InitiateDownloadSequence()
         {
-            Debug.Log("Запущена последовательность загрузки");
             string url = UrlBox.Text;
+            Debug.Log($"Запущена последовательность загрузки для запроса: [{url}]");
             ClearUrlBox();
             try
             {
@@ -125,6 +125,7 @@ namespace YTExtractor
             {
                 case WarningType.InvalidUrl:
                     {
+                        Debug.Warning($"Недействительная ссылка: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = "Бака, это не ссылка!",
@@ -135,6 +136,7 @@ namespace YTExtractor
                     }
                 case WarningType.NotYTUrl:
                     {
+                        Debug.Warning($"Неютубная ссылка: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = "Бака, это не ссылка на ютуб!",
@@ -145,6 +147,7 @@ namespace YTExtractor
                     }
                 case WarningType.PlaylistNotFound:
                     {
+                        Debug.Warning($"Плейлист не найден: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = $"Бака, я не нашел плейлиста по твоей ссылке!\n\r{url}",
@@ -155,6 +158,7 @@ namespace YTExtractor
                     }
                 case WarningType.VideoNotFound:
                     {
+                        Debug.Warning($"Видео не найдено: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
@@ -165,6 +169,7 @@ namespace YTExtractor
                     }
                 case WarningType.UnknownError:
                     {
+                        Debug.Error($"Вызвана неизвестная ошибка: [{url}]");
                         ContentDialog bakaMsg = new ContentDialog()
                         {
                             Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}",
@@ -178,6 +183,7 @@ namespace YTExtractor
 
         private async Task DownloadPlaylist(string url)
         {
+            Debug.Log($"Запущена последовательность загрузки плейлиста: [{url}]");
             PlaylistData pd = extractor.GetPlaylistData(url);
             PlaylistFoundDialogue pfd = new PlaylistFoundDialogue(
                 pd.Title,
@@ -202,6 +208,7 @@ namespace YTExtractor
 
         private async Task DownloadInPlaylist(string url)
         {
+            Debug.Log($"Запущена последовательность загрузки плейлиста по видео: [{url}]");
             try
             {
                 PlaylistData pd = extractor.GetPlaylistData(url);
@@ -238,6 +245,7 @@ namespace YTExtractor
 
         private async Task DownloadOne(string url)
         {
+            Debug.Log($"Запущена последовательность загрузки видео: [{url}]");
             var video = extractor.GetVideoInfo(url);
             PlaylistFoundDialogue fv = new PlaylistFoundDialogue(
                 video.Title,
