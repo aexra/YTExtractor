@@ -191,8 +191,7 @@ namespace YTExtractor
         /// <returns></returns>
         public async Task<Stream> GetOutputStream(StorageFile dest)
         {
-            Stream dstream = (await dest.OpenAsync(FileAccessMode.ReadWrite)).AsStream();
-            return dstream;
+            return (await dest.OpenAsync(FileAccessMode.ReadWrite)).AsStream();
         }
 
         /// <summary>
