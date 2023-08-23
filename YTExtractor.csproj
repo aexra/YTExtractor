@@ -123,6 +123,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Debug.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="PlaylistData.cs" />
     <Compile Include="PlaylistFoundDialogue.xaml.cs">

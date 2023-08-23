@@ -10,14 +10,8 @@ using System.Web;
 using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
-using Windows.Storage.FileProperties;
 using YTExtractor.Extensions;
-using System.Diagnostics;
 using AngleSharp.Dom;
-using System.Collections.Generic;
-using Windows.Foundation.Collections;
-using System.Runtime.InteropServices;
-using System.Xml.Schema;
 
 namespace YTExtractor
 {
@@ -52,6 +46,7 @@ namespace YTExtractor
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
+            Task.Run(Debug.GenerateLogFile);
         }
 
         /// <summary>

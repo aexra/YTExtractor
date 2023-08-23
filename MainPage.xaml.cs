@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Foundation.Diagnostics;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using YTExtractor;
 
 namespace YTExtractor
 {
@@ -22,8 +24,6 @@ namespace YTExtractor
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
-
-            extractor.GetVideoInfo("https://youtu.be/mas76qT3JVM");
         }
 
         private void OnUrlChanged(object sender, TextChangedEventArgs e)
@@ -39,6 +39,7 @@ namespace YTExtractor
 
         private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
         {
+            Debug.Log("Вставлена строка");
             TextBox urlBox = sender as TextBox;
             var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
             try
@@ -65,11 +66,13 @@ namespace YTExtractor
 
         private async void OnDownloadPressed(object sender, RoutedEventArgs e)
         {
+            Debug.Log("Нажата кнопка загрузить");
             await InitiateDownloadSequence();
         }
 
         private async Task InitiateDownloadSequence()
         {
+            Debug.Log("Запущена последовательность загрузки");
             string url = UrlBox.Text;
             ClearUrlBox();
             try
@@ -101,6 +104,8 @@ namespace YTExtractor
 
         private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
         {
+            Debug.Log("Выбор пути сохранения");
+
             var folderPicker = new Windows.Storage.Pickers.FolderPicker();
             folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
             folderPicker.FileTypeFilter.Add("*");
@@ -108,8 +113,8 @@ namespace YTExtractor
             Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             if (folder != null)
             {
-                System.Diagnostics.Debug.WriteLine("OLD FOLDER:  " + extractor.downloadPath);
-                System.Diagnostics.Debug.WriteLine("NEW FOLDER:  " + folder.Path);
+                Debug.Log("OLD FOLDER:  " + extractor.downloadPath);
+                Debug.Log("NEW FOLDER:  " + folder.Path);
                 extractor.SetDownloadPath(folder.Path);
             }
         }
