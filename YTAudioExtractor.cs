@@ -35,7 +35,7 @@ namespace YTExtractor
         /// <summary>
         /// Директория сохранения загруженных файлов
         /// </summary>
-        public string downloadPath = Syroot.Windows.IO.KnownFolders.Downloads.Path;
+        public string downloadPath;
 
         /// <summary>
         /// Конструктор класса YTAudioExtractor
@@ -48,7 +48,9 @@ namespace YTExtractor
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
-            Task.Run(Debug.GenerateLogFile);
+            ConfigManager.LoadConf();
+            Debug.GenerateLogFile();
+            downloadPath = (string)ConfigManager.Config["downloadPath"];
         }
 
         /// <summary>

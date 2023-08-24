@@ -54,9 +54,9 @@ namespace YTExtractor
         /// <summary>
         /// Генерирует поток для ввода логов
         /// </summary>
-        public static async Task GenerateLogFile()
+        public static void GenerateLogFile()
         {
-            file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            file = Task.Run(async () => await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting)).Result;
             Log("LastSessionLog.txt создан");
         }
     }
