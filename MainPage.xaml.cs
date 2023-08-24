@@ -27,7 +27,7 @@ namespace YTExtractor
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
-            IConfigManager.LoadConf();
+            ConfigManager.LoadConf();
 
             // warmup extractor
             extractor.GetVideoInfo("https://youtu.be/GG7Yb0tg0rw?si=WH11zdXpCjo4Jmkv");
@@ -123,6 +123,8 @@ namespace YTExtractor
                 Debug.Log("OLD FOLDER:  " + extractor.downloadPath);
                 Debug.Log("NEW FOLDER:  " + folder.Path);
                 extractor.SetDownloadPath(folder.Path);
+                ConfigManager.Config["downloadPath"] = folder.Path;
+                ConfigManager.SaveConf();
             }
         }
 

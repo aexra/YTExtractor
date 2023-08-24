@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace YTExtractor
 {
-    internal class IConfigManager
+    internal class ConfigManager
     {
         private static StorageFolder ConfigFolder = ApplicationData.Current.LocalFolder;
         private static Dictionary<string, object> DefaultDict = new Dictionary<string, object>
