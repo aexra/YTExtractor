@@ -15,7 +15,7 @@ namespace YTExtractor
         private static StorageFolder ConfigFolder = ApplicationData.Current.LocalFolder;
         private static Dictionary<string, object> DefaultDict = new Dictionary<string, object>
         {
-            {"downloadPath", sy.KnownFolders.Downloads}
+            {"downloadPath", sy.KnownFolders.Downloads.Path}
         };
         public static Dictionary<string, object> Config;
 
@@ -25,7 +25,7 @@ namespace YTExtractor
             {
                 StorageFile file = Task.Run(async () => await ConfigFolder.CreateFileAsync("config.txt", CreationCollisionOption.ReplaceExisting)).Result;
                 Task.Run(async () => await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(DefaultDict)));
-                Debug.Log("Конфиг загружен");
+                Debug.Log("config.txt создан");
                 return Config = DefaultDict;
             }
             else

@@ -27,6 +27,7 @@ namespace YTExtractor
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
+            IConfigManager.LoadConf();
 
             // warmup extractor
             extractor.GetVideoInfo("https://youtu.be/GG7Yb0tg0rw?si=WH11zdXpCjo4Jmkv");
