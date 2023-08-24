@@ -11,6 +11,7 @@ using Google.Apis.YouTube.v3.Data;
 using System.Collections.Specialized;
 using Windows.Storage;
 using YTExtractor.Extensions;
+using YTExtractor.Data;
 using AngleSharp.Dom;
 using System.Collections.Generic;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace YTExtractor
+namespace YTExtractor.Data
 {
     internal class PlaylistData
     {

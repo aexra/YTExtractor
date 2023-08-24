@@ -1,4 +1,4 @@
-﻿namespace YTExtractor
+﻿namespace YTExtractor.Data
 {
     internal class VideoData
     {
