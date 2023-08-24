@@ -36,10 +36,12 @@ namespace YTExtractor
                 return Config = dict;
             }
         }
-
+        
         public static void SaveConf()
         {
-
+            StorageFile file = Task.Run(async () => await ConfigFolder.GetFileAsync("config.txt")).Result;
+            Task.Run(async () => await FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(Config)));
+            Debug.Log("Конфиг сохранен");
         }
     }
 }
