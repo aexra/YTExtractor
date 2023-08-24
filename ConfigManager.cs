@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace YTExtractor
 {
     internal class IConfigManager
     {
-        public static string ConfigPath;
+        public static StorageFolder ConfigFolder = ApplicationData.Current.LocalFolder;
 
         public static Dictionary<string, object> LoadConf()
         {
