@@ -48,8 +48,8 @@ namespace YTExtractor
                 ApplicationName = this.GetType().ToString()
             });
             youtubeClient = new YoutubeClient();
-            ConfigManager.LoadConf();
             Debug.GenerateLogFile();
+            ConfigManager.LoadConf();
             downloadPath = (string)ConfigManager.Config["downloadPath"];
         }
 
