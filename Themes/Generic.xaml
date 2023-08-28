@@ -2,16 +2,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:YTExtractor">
-
-    <Style TargetType="local:CustomControl1" >
+    
+    <Style TargetType="local:HistoryVideoPage" >
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:CustomControl1">
-                    <Border
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                    </Border>
+                <ControlTemplate TargetType="local:HistoryVideoPage">
+                    <Grid Width="100" Height="100" Background="{TemplateBinding Background}">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{TemplateBinding Label}"/>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

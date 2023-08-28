@@ -32,7 +32,7 @@
             </Grid>
         </StackPanel>
         <StackPanel CornerRadius="25" BorderThickness="3" Margin="30,17,30,31" Grid.Row="1" BorderBrush="#FF4C4C4C">
-            <MediaElement x:Name="media" Height="100" Width="100" AudioCategory="Media"/>
+            <local:HistoryVideoPage Label="chlenorez" Background="Red"/>
         </StackPanel>
         <Button x:Name="DownloadsFolderBtn" Content="" Margin="0,49,0,129" VerticalAlignment="Stretch" Width="10" ToolTipService.ToolTip="Открыть папку загрузок" Click="OnOpenDownloadsFolderClicked" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}"/>
         <Button x:Name="RootFolderBtn" Content="" Width="10" Margin="0,95,0,83" VerticalAlignment="Stretch" ToolTipService.ToolTip="Открыть корневую папку приложения" Click="OnOpenRootFolderClicked" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}"/>
