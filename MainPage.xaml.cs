@@ -213,8 +213,9 @@ namespace YTExtractor
             {
                 IProgress<int> progress = new SynchronousProgress<int>(value => 
                 {
-                    Debug.Log(value.ToString());
+                    //Debug.Log(value.ToString());
                 });
+                //Debug.Log(();
                 await extractor.Extract(url, progress);
             }
         }

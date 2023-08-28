@@ -165,7 +165,7 @@ namespace YTExtractor
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task Extract(string videoId, IProgress<int> progress = null)
+        public async Task Extract(string videoId, IProgress<int> percentProgress = null,  IProgress<long> dataProgress = null)
         {
             VideoData info = GetVideoInfo(videoId);
 
@@ -179,9 +179,9 @@ namespace YTExtractor
 
             Stream outputStream = await GetOutputStream(outputFile);
             Stream audioStream = await GetAudioStreamAsync(videoId);
-
-            if (progress == null) await audioStream.CopyToAsync(outputStream);
-            else await audioStream.CopyToAsync(outputStream, progress); 
+            
+            if (percentProgress == null) await audioStream.CopyToAsync(outputStream);
+            else await audioStream.CopyToAsync(outputStream, percentProgress, dataProgress); 
 
             outputStream.Dispose();
 
@@ -393,6 +393,17 @@ namespace YTExtractor
                         return;
                     }
             }
+        }
+
+        /// <summary>
+        /// Возвращает размер файла аудио формата видео по ссылке/id
+        /// </summary>
+        /// <param name="videoId"></param>
+        /// <returns></returns>
+        public async Task<long> GetAudioSizeAsync(string videoId)
+        {
+            if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
+            return (await GetAudioStreamAsync(videoId)).Length;
         }
     }
 }
