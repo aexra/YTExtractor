@@ -35,9 +35,7 @@
         <Button x:Name="RootFolderBtn" Content="" Width="10" Margin="0,95,0,83" VerticalAlignment="Stretch" ToolTipService.ToolTip="Открыть корневую папку приложения" Click="OnOpenRootFolderClicked" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}"/>
         <Button x:Name="ResetConfigBtn" Content="" Margin="0,141,0,37" VerticalAlignment="Stretch" Width="10" ToolTipService.ToolTip="Сбросить настройки" Click="OnResetConfigClicked" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}"/>
         <ScrollViewer x:Name="HistoryViewer" CornerRadius="25" BorderThickness="3" BorderBrush="#FF4C4C4C" Margin="30,15,30,30" Grid.RowSpan="2" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top">
-            <StackPanel x:Name="HistoryBox" Margin="10,10,10,10">
-                
-            </StackPanel>
+            <StackPanel x:Name="HistoryBox" Margin="10,10,10,10" Spacing="20"></StackPanel>
         </ScrollViewer>
     </Grid>
 </Page>

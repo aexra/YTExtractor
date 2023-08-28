@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -19,6 +20,7 @@ namespace YTExtractor
         public HistoryVideoPage()
         {
             this.DefaultStyleKey = typeof(HistoryVideoPage);
+            this.Background = new SolidColorBrush(Colors.Red);
         }
 
         public string Label
