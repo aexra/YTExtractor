@@ -1,6 +1,7 @@
 ﻿using Windows.Storage;
 using System;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace YTExtractor
 {
@@ -17,9 +18,14 @@ namespace YTExtractor
         private static readonly StorageFolder folder = ApplicationData.Current.LocalFolder;
 
         /// <summary>
-        /// Примитивный логгер
+        /// Текстовый файл
         /// </summary>
         private static StorageFile file;
+
+        /// <summary>
+        /// Логгер типа
+        /// </summary>
+        private static StreamWriter sw;
 
         /// <summary>
         /// Логает сообщение с префиксом [INFO  ]
@@ -28,7 +34,8 @@ namespace YTExtractor
         {
             string line = DateTime.Now.TimeOfDay.ToString() + $" [{prefix}\t] " + msg;
             System.Diagnostics.Debug.WriteLine(line);
-            Task.Run(() => FileIO.AppendTextAsync(file, line + "\n"));
+            sw.WriteLine(line);
+            sw.Flush();
         }
 
         /// <summary>
@@ -36,9 +43,10 @@ namespace YTExtractor
         /// </summary>
         public static void Warning(string msg)
         {
-            string line = DateTime.Now.TimeOfDay.ToString() + " [WARNING\t] " + msg;
+            string line = DateTime.Now.TimeOfDay.ToString() + " [WARN\t] " + msg;
             System.Diagnostics.Debug.WriteLine(line);
-            Task.Run(() => FileIO.AppendTextAsync(file, line + "\n"));
+            sw.WriteLine(line);
+            sw.Flush();
         }
 
         /// <summary>
@@ -48,7 +56,8 @@ namespace YTExtractor
         {
             string line = DateTime.Now.TimeOfDay.ToString() + " [ERROR\t] " + msg;
             System.Diagnostics.Debug.WriteLine(line);
-            Task.Run(() => FileIO.AppendTextAsync(file, line + "\n"));
+            sw.WriteLine(line);
+            sw.Flush();
         }
 
         /// <summary>
@@ -57,6 +66,7 @@ namespace YTExtractor
         public static void GenerateLogFile()
         {
             file = Task.Run(async () => await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting)).Result;
+            sw = new StreamWriter(Task.Run(async () => await file.OpenStreamForWriteAsync()).Result);
             Log("LastSessionLog.txt создан");
         }
     }
