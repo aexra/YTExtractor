@@ -15,8 +15,8 @@ namespace YTExtractor
 {
     public sealed partial class MainPage : Page
     {
-        YTAudioExtractor extractor;
-        enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound, UnknownError};
+        private YTAudioExtractor extractor;
+        private enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound, UnknownError};
 
         public MainPage()
         {
