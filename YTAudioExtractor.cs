@@ -54,6 +54,7 @@ namespace YTExtractor
             Debug.GenerateLogFile();
             ConfigManager.LoadConf();
             UpdateValues();
+            GetVideoInfo("https://youtu.be/GG7Yb0tg0rw?si=WH11zdXpCjo4Jmkv");
         }
 
         /// <summary>
