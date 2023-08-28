@@ -215,7 +215,6 @@ namespace YTExtractor
                 {
                     //Debug.Log(value.ToString());
                 });
-                //Debug.Log(();
                 await extractor.Extract(url, progress);
             }
         }
