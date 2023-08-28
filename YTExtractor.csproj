@@ -126,7 +126,9 @@
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="HistoryVideoPage.cs" />
+    <Compile Include="HistoryVideoPage.xaml.cs">
+      <DependentUpon>HistoryVideoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlaylistData.cs" />
     <Compile Include="PlaylistFoundDialogue.xaml.cs">
       <DependentUpon>PlaylistFoundDialogue.xaml</DependentUpon>
@@ -158,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="HistoryVideoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PlaylistFoundDialogue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

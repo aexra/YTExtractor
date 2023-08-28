@@ -211,11 +211,11 @@ namespace YTExtractor
             var res = await fv.ShowAsync();
             if (res == ContentDialogResult.Primary)
             {
-                HistoryVideoPage hvp = new HistoryVideoPage();
+                HistoryVideoPage hvp = new HistoryVideoPage(video.Title, video.Thumbnail, video.ChannelTitle, video.ChannelThumbnail);
                 HistoryBox.Children.Insert(0, hvp);
                 IProgress<int> progress = new SynchronousProgress<int>(value => 
                 {
-                    //Debug.Log(value.ToString());
+                    hvp.SetProgress(value);
                 });
                 await extractor.Extract(url, progress);
             }
