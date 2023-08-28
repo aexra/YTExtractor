@@ -180,7 +180,9 @@ namespace YTExtractor
             Stream outputStream = await GetOutputStream(outputFile);
             Stream audioStream = await GetAudioStreamAsync(videoId);
 
-            await audioStream.CopyToAsync(outputStream);
+            if (progress == null) await audioStream.CopyToAsync(outputStream);
+            else await audioStream.CopyToAsync(outputStream, progress); 
+
             outputStream.Dispose();
 
             await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);

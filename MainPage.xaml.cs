@@ -14,6 +14,7 @@ using YTExtractor.Data;
 using Windows.Storage;
 using Windows.System;
 using AngleSharp.Dom;
+using YTExtractor.Extensions;
 
 namespace YTExtractor
 {
@@ -209,7 +210,13 @@ namespace YTExtractor
             UrlBox.Text = string.Empty;
             var res = await fv.ShowAsync();
             if (res == ContentDialogResult.Primary)
-                await extractor.Extract(url);
+            {
+                IProgress<int> progress = new SynchronousProgress<int>(value => 
+                {
+                    Debug.Log(value.ToString());
+                });
+                await extractor.Extract(url, progress);
+            }
         }
 
         private void ClearUrlBox()
