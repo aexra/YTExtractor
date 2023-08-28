@@ -14,9 +14,12 @@ using YTExtractor.Extensions;
 using YTExtractor.Data;
 using AngleSharp.Dom;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Controls;
 
 namespace YTExtractor
 {
+    enum WarningType { InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound, FolderAccessDenied, FileCreateAccessDenied, UnknownError };
+
     /// <summary>
     /// Обобщенный класс, выполняющий всю работу по загрузке аудиофайлов
     /// </summary>
@@ -50,7 +53,7 @@ namespace YTExtractor
             youtubeClient = new YoutubeClient();
             Debug.GenerateLogFile();
             ConfigManager.LoadConf();
-            downloadPath = (string)ConfigManager.Config["downloadPath"];
+            UpdateValues();
         }
 
         /// <summary>
@@ -166,7 +169,12 @@ namespace YTExtractor
             VideoData info = GetVideoInfo(videoId);
 
             string fileName = info.Title.ReplaceInvalidChars();
-            StorageFile outputFile = await MakeOutputFile(fileName);
+
+            StorageFile outputFile;
+            try
+            { outputFile = await MakeOutputFile(fileName); }
+            catch
+            { await WarningDialog(WarningType.FileCreateAccessDenied); return; }
 
             Stream outputStream = await GetOutputStream(outputFile);
             Stream audioStream = await GetAudioStreamAsync(videoId);
@@ -184,6 +192,8 @@ namespace YTExtractor
         /// <returns></returns>
         public async Task<StorageFile> MakeOutputFile(string title)
         {
+            //if (downloadPath == Syroot.Windows.IO.KnownFolders.Downloads.Path)
+            //    return await DownloadsFolder.CreateFileAsync(title, CreationCollisionOption.GenerateUniqueName);
             return await (await StorageFolder.GetFolderFromPathAsync(downloadPath)).CreateFileAsync(title, CreationCollisionOption.GenerateUniqueName);
         }
 
@@ -281,6 +291,105 @@ namespace YTExtractor
             while (response.NextPageToken is not null);
 
             return ids;
+        }
+
+        /// <summary>
+        /// Обновляет значения настроек, полученных из конфига
+        /// </summary>
+        public void UpdateValues()
+        {
+            downloadPath = (string)ConfigManager.Config["downloadPath"];
+        }
+
+        /// <summary>
+        /// Вызывает диалоговое окно с сообщением об ошибке
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="e"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task WarningDialog(WarningType t, Exception e = null, string url = null)
+        {
+            switch (t)
+            {
+                case WarningType.InvalidUrl:
+                    {
+                        Debug.Warning($"Недействительная ссылка: [{url}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = "Бака, это не ссылка!",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.NotYTUrl:
+                    {
+                        Debug.Warning($"Неютубная ссылка: [{url}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = "Бака, это не ссылка на ютуб!",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.PlaylistNotFound:
+                    {
+                        Debug.Warning($"Плейлист не найден: [{url}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не нашел плейлиста по твоей ссылке!\n\r{url}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.VideoNotFound:
+                    {
+                        Debug.Warning($"Видео не найдено: [{url}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.UnknownError:
+                    {
+                        Debug.Error($"Вызвана неизвестная ошибка: [{url}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}\n\n\n{e}",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.FolderAccessDenied:
+                    {
+                        Debug.Error($"Отказано в доступе при открытии папки загрузок по адресу: [{downloadPath}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не могу открыть твою папку! Тупая винда запрещает мне её трогать, так что выбери другую и потом открывай",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+                case WarningType.FileCreateAccessDenied:
+                    {
+                        Debug.Error($"Отказано в доступе при создании файла в папке: [{downloadPath}]");
+                        ContentDialog bakaMsg = new ContentDialog()
+                        {
+                            Content = $"Бака, я не могу загружать в эту папку! Создай где-нибудь новую папку и выбери её, или попробуй выбрать другую папку",
+                            PrimaryButtonText = "Я бака"
+                        };
+                        await bakaMsg.ShowAsync();
+                        return;
+                    }
+            }
         }
     }
 }

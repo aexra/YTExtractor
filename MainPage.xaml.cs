@@ -1,6 +1,7 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using Google.Apis.YouTube.v3;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Diagnostics;
@@ -10,13 +11,15 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using YTExtractor;
 using YTExtractor.Data;
+using Windows.Storage;
+using Windows.System;
+using AngleSharp.Dom;
 
 namespace YTExtractor
 {
     public sealed partial class MainPage : Page
     {
         private YTAudioExtractor extractor;
-        private enum WarningType {InvalidUrl, NotYTUrl, PlaylistNotFound, VideoNotFound, UnknownError};
 
         public MainPage()
         {
@@ -85,11 +88,11 @@ namespace YTExtractor
             {
                 // это нормальная ссылка?
                 if (!extractor.IsUrl(url))
-                    await WarningDialog(url, WarningType.InvalidUrl);
+                    await extractor.WarningDialog(WarningType.InvalidUrl, null, url);
 
                 // это (почти) ссылка на ютуб?
                 else if (!url.Contains("youtu"))
-                    await WarningDialog(url, WarningType.NotYTUrl);
+                    await extractor.WarningDialog(WarningType.NotYTUrl, null, url);
 
                 // это ссылка на плейлист?
                 else if (url.Contains("playlist"))
@@ -104,7 +107,7 @@ namespace YTExtractor
             }
             catch (Exception e)
             {
-                await WarningDialog(url, WarningType.UnknownError, e);
+                await extractor.WarningDialog(WarningType.UnknownError, e, url);
             }
         }
 
@@ -124,68 +127,6 @@ namespace YTExtractor
                 extractor.SetDownloadPath(folder.Path);
                 ConfigManager.Config["downloadPath"] = folder.Path;
                 ConfigManager.SaveConf();
-            }
-        }
-
-        private async Task WarningDialog(string url, WarningType t, Exception e = null)
-        {
-            switch (t)
-            {
-                case WarningType.InvalidUrl:
-                    {
-                        Debug.Warning($"Недействительная ссылка: [{url}]");
-                        ContentDialog bakaMsg = new ContentDialog()
-                        {
-                            Content = "Бака, это не ссылка!",
-                            PrimaryButtonText = "Я бака"
-                        };
-                        await bakaMsg.ShowAsync();
-                        return;
-                    }
-                case WarningType.NotYTUrl:
-                    {
-                        Debug.Warning($"Неютубная ссылка: [{url}]");
-                        ContentDialog bakaMsg = new ContentDialog()
-                        {
-                            Content = "Бака, это не ссылка на ютуб!",
-                            PrimaryButtonText = "Я бака"
-                        };
-                        await bakaMsg.ShowAsync();
-                        return;
-                    }
-                case WarningType.PlaylistNotFound:
-                    {
-                        Debug.Warning($"Плейлист не найден: [{url}]");
-                        ContentDialog bakaMsg = new ContentDialog()
-                        {
-                            Content = $"Бака, я не нашел плейлиста по твоей ссылке!\n\r{url}",
-                            PrimaryButtonText = "Я бака"
-                        };
-                        await bakaMsg.ShowAsync();
-                        return;
-                    }
-                case WarningType.VideoNotFound:
-                    {
-                        Debug.Warning($"Видео не найдено: [{url}]");
-                        ContentDialog bakaMsg = new ContentDialog()
-                        {
-                            Content = $"Бака, я не нашел видео по твоей ссылке!\n\r{url}",
-                            PrimaryButtonText = "Я бака"
-                        };
-                        await bakaMsg.ShowAsync();
-                        return;
-                    }
-                case WarningType.UnknownError:
-                    {
-                        Debug.Error($"Вызвана неизвестная ошибка: [{url}]");
-                        ContentDialog bakaMsg = new ContentDialog()
-                        {
-                            Content = $"Бака, ТЫ вызвал доселе неизвестную ошибку!\nВозможно плейлист или видео запривачен(о)\nТы виноват, подумай над своим поведением!\n\nТвоя ссылка:\n{url}\n\n\n{e}",
-                            PrimaryButtonText = "Я бака"
-                        };
-                        await bakaMsg.ShowAsync();
-                        return;
-                    }
             }
         }
 
@@ -277,6 +218,27 @@ namespace YTExtractor
         private void ClearUrlBox()
         {
             UrlBox.Text = string.Empty;
+        }
+
+        private async void OnOpenDownloadsFolderClicked(object sender, RoutedEventArgs e)
+        {
+            Debug.Log("Открыта папка загрузок");
+            try
+            { await Launcher.LaunchFolderAsync(await StorageFolder.GetFolderFromPathAsync(extractor.downloadPath)); }
+            catch (Exception)
+            { await extractor.WarningDialog(WarningType.FolderAccessDenied); }
+        }
+
+        private async void OnOpenRootFolderClicked(object sender, RoutedEventArgs e)
+        {
+            Debug.Log("Открыта корневая папка");
+            await Launcher.LaunchFolderAsync(ApplicationData.Current.LocalFolder);
+        }
+
+        private void OnResetConfigClicked(object sender, RoutedEventArgs e)
+        {
+            ConfigManager.ResetConf();
+            extractor.UpdateValues();
         }
     }
 }
