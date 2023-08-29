@@ -44,7 +44,7 @@ namespace YTExtractor
         }
 
         /**
-         *           PRIVATE MATHODS
+         *           PRIVATE METHODS
          */
 
         private async Task InitiateDownloadSequence()
