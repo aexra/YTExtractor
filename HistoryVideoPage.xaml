@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DesignWidth="400" Height="105">
 
-    <StackPanel BorderBrush="#FF4C4C4C" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Top" BorderThickness="3" RenderTransformOrigin="0.5,0.5">
+    <StackPanel BorderBrush="#FF4C4C4C" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Top" BorderThickness="3" RenderTransformOrigin="0.5,0.5" Background="#FF191919">
         <Grid Height="100" Width="400" VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="91*"/>
