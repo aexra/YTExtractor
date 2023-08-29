@@ -15,6 +15,7 @@ using Windows.Storage;
 using Windows.System;
 using AngleSharp.Dom;
 using YTExtractor.Extensions;
+using System.Linq;
 
 namespace YTExtractor
 {
@@ -198,16 +199,16 @@ namespace YTExtractor
         private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
         {
             Debug.Log("Вставлена строка");
-            TextBox urlBox = sender as TextBox;
             var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
             try
             {
                 if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
                 {
                     var text = await dataPackageView.GetTextAsync();
+                    text = string.Join("", text.Split(' '));
                     if (string.IsNullOrWhiteSpace(text))
                     {
-                        ClearUrlBox();
+                        Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
                         return;
                     }
                     if (extractor.IsUrl(text))
@@ -215,6 +216,11 @@ namespace YTExtractor
                         await InitiateDownloadSequence();
                         return;
                     }
+                }
+                else
+                {
+                    Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
+                    return;
                 }
             }
             catch (Exception) { }
