@@ -26,8 +26,8 @@
                         <ColumnDefinition Width="246*"/>
                         <ColumnDefinition Width="246*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="Download" CornerRadius="5" Content="Загрузить" Grid.Column="0" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#6665FF00" IsEnabled="False" Click="OnDownloadPressed"/>
-                    <Button x:Name="ChooseDirectory" CornerRadius="5" Content="Выбрать папку" Grid.Column="1" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="OnSelectFolderPressed"/>
+                    <Button x:Name="Download" CornerRadius="5" Content="Загрузить" Grid.Column="0" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#6665FF00" IsEnabled="False" Click="OnDownloadClicked"/>
+                    <Button x:Name="ChooseDirectory" CornerRadius="5" Content="Выбрать папку" Grid.Column="1" FontFamily="Comic Sans MS" FontWeight="Bold" Margin="11,10,10,9" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="OnSelectFolderClicked"/>
                 </Grid>
             </Grid>
         </StackPanel>

@@ -20,7 +20,20 @@ namespace YTExtractor
 {
     public sealed partial class MainPage : Page
     {
+        /**
+         *           PRIVATE FIELDS
+         */
+
         private YTAudioExtractor extractor;
+
+        /**
+         *           PUBLIC FIELDS
+         */
+
+
+        /**
+         *           CONSTRUCTOR
+         */
 
         public MainPage()
         {
@@ -33,51 +46,9 @@ namespace YTExtractor
             extractor = new YTAudioExtractor();
         }
 
-        private void OnUrlChanged(object sender, TextChangedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(UrlBox.Text))
-            {
-                if (UrlBox.Text != string.Empty) ClearUrlBox();
-                Download.IsEnabled = false;
-                return;
-            }
-            Download.IsEnabled = true;
-        }
-
-        private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
-        {
-            Debug.Log("Вставлена строка");
-            TextBox urlBox = sender as TextBox;
-            var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-            try
-            {
-                if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
-                {
-                    var text = await dataPackageView.GetTextAsync();
-                    if (string.IsNullOrWhiteSpace(text))
-                    {
-                        ClearUrlBox();
-                        return;
-                    }
-                    if (extractor.IsUrl(text))
-                    {
-                        await InitiateDownloadSequence();
-                        return;
-                    }
-                }
-            } catch (Exception) { }
-        }
-
-        private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            
-        }
-
-        private async void OnDownloadPressed(object sender, RoutedEventArgs e)
-        {
-            Debug.Log("Нажата кнопка загрузить");
-            await InitiateDownloadSequence();
-        }
+        /**
+         *           PRIVATE MATHODS
+         */
 
         private async Task InitiateDownloadSequence()
         {
@@ -111,25 +82,6 @@ namespace YTExtractor
             }
         }
 
-        private async void OnSelectFolderPressed(object sender, RoutedEventArgs e)
-        {
-            Debug.Log("Выбор пути сохранения");
-
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                Debug.Log("OLD FOLDER:  " + extractor.downloadPath);
-                Debug.Log("NEW FOLDER:  " + folder.Path);
-                extractor.SetDownloadPath(folder.Path);
-                ConfigManager.Config["downloadPath"] = folder.Path;
-                ConfigManager.SaveConf();
-            }
-        }
-
         private async Task DownloadPlaylist(string url)
         {
             Debug.Log($"Запущена последовательность загрузки плейлиста: [{url}]");
@@ -155,7 +107,6 @@ namespace YTExtractor
                 }
             }
         }
-
         private async Task DownloadInPlaylist(string url)
         {
             Debug.Log($"Запущена последовательность загрузки плейлиста по видео: [{url}]");
@@ -192,7 +143,6 @@ namespace YTExtractor
                 await DownloadOne(url);
             }
         }
-
         private async Task DownloadOne(string url)
         {
             Debug.Log($"Запущена последовательность загрузки видео: [{url}]");
@@ -213,7 +163,7 @@ namespace YTExtractor
             {
                 HistoryVideoPage hvp = new HistoryVideoPage(video.Title, video.Thumbnail, video.ChannelTitle, video.ChannelThumbnail);
                 HistoryBox.Children.Insert(0, hvp);
-                IProgress<int> progress = new SynchronousProgress<int>(value => 
+                IProgress<int> progress = new SynchronousProgress<int>(value =>
                 {
                     hvp.SetProgress(value);
                 });
@@ -226,6 +176,76 @@ namespace YTExtractor
             UrlBox.Text = string.Empty;
         }
 
+        /**
+         *           PUBLIC METHODS
+         */
+
+
+        /**
+         *              EVENTS
+         */
+
+        private void OnUrlChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(UrlBox.Text))
+            {
+                if (UrlBox.Text != string.Empty) ClearUrlBox();
+                Download.IsEnabled = false;
+                return;
+            }
+            Download.IsEnabled = true;
+        }
+        private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
+        {
+            Debug.Log("Вставлена строка");
+            TextBox urlBox = sender as TextBox;
+            var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            try
+            {
+                if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+                {
+                    var text = await dataPackageView.GetTextAsync();
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        ClearUrlBox();
+                        return;
+                    }
+                    if (extractor.IsUrl(text))
+                    {
+                        await InitiateDownloadSequence();
+                        return;
+                    }
+                }
+            }
+            catch (Exception) { }
+        }
+        private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
+        {
+
+        }
+        private async void OnDownloadClicked(object sender, RoutedEventArgs e)
+        {
+            Debug.Log("Нажата кнопка загрузить");
+            await InitiateDownloadSequence();
+        }
+        private async void OnSelectFolderClicked(object sender, RoutedEventArgs e)
+        {
+            Debug.Log("Выбор пути сохранения");
+
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                Debug.Log("OLD FOLDER:  " + extractor.downloadPath);
+                Debug.Log("NEW FOLDER:  " + folder.Path);
+                extractor.SetDownloadPath(folder.Path);
+                ConfigManager.Config["downloadPath"] = folder.Path;
+                ConfigManager.SaveConf();
+            }
+        }
         private async void OnOpenDownloadsFolderClicked(object sender, RoutedEventArgs e)
         {
             Debug.Log("Открыта папка загрузок");
@@ -234,13 +254,11 @@ namespace YTExtractor
             catch (Exception)
             { await extractor.WarningDialog(WarningType.FolderAccessDenied); }
         }
-
         private async void OnOpenRootFolderClicked(object sender, RoutedEventArgs e)
         {
             Debug.Log("Открыта корневая папка");
             await Launcher.LaunchFolderAsync(ApplicationData.Current.LocalFolder);
         }
-
         private void OnResetConfigClicked(object sender, RoutedEventArgs e)
         {
             ConfigManager.ResetConf();
