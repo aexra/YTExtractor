@@ -103,7 +103,6 @@ namespace YTExtractor
         public VideoData GetVideoInfo(string videoId)
         {
             if (IsUrl(videoId)) { videoId = ParseVideoId(videoId); }
-            //return await youtubeClient.Videos.GetAsync(videoId);
             VideosResource.ListRequest listRequest = youtubeService.Videos.List("snippet");
             listRequest.Id = videoId;
             VideoListResponse response = listRequest.Execute();
@@ -111,7 +110,7 @@ namespace YTExtractor
             VideoData vd = new VideoData();
             vd.Id = videoId;
             vd.Title = r.Title;
-            vd.Thumbnail = r.Thumbnails.High.Url;
+            vd.Thumbnail = r.Thumbnails.Maxres.Url;
             vd.ChannelId = r.ChannelId;
             vd.ChannelTitle = r.ChannelTitle;
             ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
