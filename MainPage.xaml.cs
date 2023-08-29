@@ -143,8 +143,8 @@ namespace YTExtractor
                 PrimaryButtonText = "Извлечь все",
                 SecondaryButtonText = "Отмена",
             };
-            var result = await pfd.ShowAsync();
-            if (result == ContentDialogResult.Primary)
+            var response = await pfd.ShowAsync();
+            if (response == ContentDialogResult.Primary)
             {
                 var ids = extractor.GetPlaylistIds(pd.PlaylistId);
                 foreach (string id in ids)
@@ -177,8 +177,8 @@ namespace YTExtractor
                     PrimaryButtonText = "Извлечь все",
                     SecondaryButtonText = "Извлечь только из этого видео",
                 };
-                var result = await vfip.ShowAsync();
-                if (result == ContentDialogResult.Primary)
+                var response = await vfip.ShowAsync();
+                if (response == ContentDialogResult.Primary)
                     foreach (string id in pd.Ids)
                         await extractor.Extract(id);
                 else
@@ -206,10 +206,8 @@ namespace YTExtractor
                 PrimaryButtonText = "Извлечь аудио",
                 SecondaryButtonText = "Отмена",
             };
-            Download.IsEnabled = false;
-            UrlBox.Text = string.Empty;
-            var res = await fv.ShowAsync();
-            if (res == ContentDialogResult.Primary)
+            var response = await fv.ShowAsync();
+            if (response == ContentDialogResult.Primary)
             {
                 HistoryVideoPage hvp = new HistoryVideoPage(video.Title, video.Thumbnail, video.ChannelTitle, video.ChannelThumbnail);
                 HistoryBox.Children.Insert(0, hvp);
