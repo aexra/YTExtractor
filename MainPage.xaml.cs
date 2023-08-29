@@ -28,11 +28,6 @@ namespace YTExtractor
         private YTAudioExtractor extractor;
 
         /**
-         *           PUBLIC FIELDS
-         */
-
-
-        /**
          *           CONSTRUCTOR
          */
 
@@ -176,11 +171,6 @@ namespace YTExtractor
         {
             UrlBox.Text = string.Empty;
         }
-
-        /**
-         *           PUBLIC METHODS
-         */
-
 
         /**
          *           EVENTS
