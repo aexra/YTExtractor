@@ -31,10 +31,10 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Image x:Name="ChannelThumbnail"/>
-                        <TextBlock x:Name="ChannelTitle" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" Margin="4,4,4,4" FontFamily="Comic Sans MS" FontSize="8"/>
+                        <TextBlock x:Name="ChannelTitle" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" Margin="4,4,4,4" FontFamily="Comic Sans MS" FontSize="10"/>
                         <Border CornerRadius="90" BorderThickness="1" Background="#FF424242" Margin="1,1,1,1"/>
                     </Grid>
-                    <TextBlock x:Name="VideoTitle" Text="VideoTitle" TextWrapping="Wrap" Margin="10,10,10,10" FontSize="10" FontFamily="Comic Sans MS"/>
+                    <TextBlock x:Name="VideoTitle" Text="VideoTitle" TextWrapping="Wrap" Margin="10,10,10,10" FontSize="12" FontFamily="Comic Sans MS"/>
                 </Grid>
             </Grid>
             <ProgressBar x:Name="ProgressBar" Grid.Row="1" Background="#33545454" Height="8"/>
