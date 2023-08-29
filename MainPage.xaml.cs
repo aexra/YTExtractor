@@ -37,8 +37,8 @@ namespace YTExtractor
         {
             if (string.IsNullOrWhiteSpace(UrlBox.Text))
             {
+                if (UrlBox.Text != string.Empty) ClearUrlBox();
                 Download.IsEnabled = false;
-                UrlBox.Text = string.Empty;
                 return;
             }
             Download.IsEnabled = true;
@@ -56,14 +56,16 @@ namespace YTExtractor
                     var text = await dataPackageView.GetTextAsync();
                     if (string.IsNullOrWhiteSpace(text))
                     {
-                        Download.IsEnabled = false;
-                        urlBox.Text = string.Empty;
+                        ClearUrlBox();
+                        return;
+                    }
+                    if (extractor.IsUrl(text))
+                    {
+                        await InitiateDownloadSequence();
                         return;
                     }
                 }
             } catch (Exception) { }
-            Download.IsEnabled = true;
-            await InitiateDownloadSequence();
         }
 
         private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
