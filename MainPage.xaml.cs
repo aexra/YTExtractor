@@ -188,32 +188,30 @@ namespace YTExtractor
         }
         private async void OnUrlPasted(object sender, TextControlPasteEventArgs e)
         {
-            Debug.Log("Вставлена строка");
+            Debug.Log("Вставлено из буфера обмена");
             var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-            try
+            for (int i = 0; i < 10; i++)
             {
-                if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+                try
                 {
-                    var text = await dataPackageView.GetTextAsync();
-                    text = string.Join("", text.Split(' '));
-                    if (string.IsNullOrWhiteSpace(text))
+                    if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
                     {
-                        //Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
-                        return;
-                    }
-                    if (extractor.IsUrl(text))
-                    {
-                        await InitiateDownloadSequence();
-                        return;
+                        var text = await dataPackageView.GetTextAsync();
+                        if (string.IsNullOrWhiteSpace(text))
+                        {
+                            //Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
+                            return;
+                        }
+                        if (extractor.IsUrl(text))
+                        {
+                            await InitiateDownloadSequence();
+                            return;
+                        }
                     }
                 }
-                else
-                {
-                    //Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
-                    return;
-                }
+                catch (Exception) { }
+                System.Threading.Thread.Sleep(10);
             }
-            catch (Exception) { }
         }
         private void OnUrlKeyDown(object sender, KeyRoutedEventArgs e)
         {
