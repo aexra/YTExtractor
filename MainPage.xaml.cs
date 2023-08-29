@@ -159,11 +159,18 @@ namespace YTExtractor
             {
                 HistoryVideoPage hvp = new HistoryVideoPage(video.Title, video.Thumbnail, video.ChannelTitle, video.ChannelThumbnail);
                 HistoryBox.Children.Insert(0, hvp);
+                var size = await extractor.GetAudioSizeAsync(url);
+                string sizeStr = Math.Round((double)size / 1048576, 1).ToString();
+                hvp.SetProgressText($"0/{sizeStr} MB");
                 IProgress<int> progress = new SynchronousProgress<int>(value =>
                 {
                     hvp.SetProgress(value);
                 });
-                await extractor.Extract(url, progress);
+                IProgress<long> dataProgress = new SynchronousProgress<long>(value =>
+                {
+                    hvp.SetProgressText($"{Math.Round((double)value/1048576, 1)}/{sizeStr} MB");
+                });
+                await extractor.Extract(url, progress, dataProgress);
             }
         }
 

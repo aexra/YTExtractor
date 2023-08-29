@@ -34,7 +34,15 @@ namespace YTExtractor
         {
             ProgressBar.Value = value;
             if (value == 100)
+            {
                 ProgressBar.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
+                ProgressText.Opacity = 0;
+            }
+        }
+
+        public void SetProgressText(string value)
+        {
+            ProgressText.Text = value;
         }
     }
 }
