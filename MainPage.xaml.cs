@@ -198,7 +198,7 @@ namespace YTExtractor
                     text = string.Join("", text.Split(' '));
                     if (string.IsNullOrWhiteSpace(text))
                     {
-                        Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
+                        //Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
                         return;
                     }
                     if (extractor.IsUrl(text))
@@ -209,7 +209,7 @@ namespace YTExtractor
                 }
                 else
                 {
-                    Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
+                    //Windows.ApplicationModel.DataTransfer.Clipboard.Clear();
                     return;
                 }
             }
