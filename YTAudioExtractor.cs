@@ -164,7 +164,7 @@ namespace YTExtractor
         /// </summary>
         /// <param name="videoId"></param>
         /// <returns></returns>
-        public async Task Extract(string videoId, IProgress<int> percentProgress = null,  IProgress<long> dataProgress = null)
+        public async Task Extract(string videoId)
         {
             VideoData info = GetVideoInfo(videoId);
 
@@ -179,9 +179,86 @@ namespace YTExtractor
             Stream outputStream = await GetOutputStream(outputFile);
             Stream audioStream = await GetAudioStreamAsync(videoId);
             
-            if (percentProgress == null) await audioStream.CopyToAsync(outputStream);
-            else await audioStream.CopyToAsync(outputStream, percentProgress, dataProgress); 
+            await audioStream.CopyToAsync(outputStream);
+            outputStream.Dispose();
 
+            await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
+        }
+        /// <summary>
+        /// Скачивает аудио в формате mp3 из видео по переданной ссылке/id
+        /// </summary>
+        /// <param name="videoId"></param>
+        /// <param name="percentProgress"></param>
+        /// <returns></returns>
+        public async Task Extract(string videoId, IProgress<int> percentProgress)
+        {
+            VideoData info = GetVideoInfo(videoId);
+
+            string fileName = info.Title.ReplaceInvalidChars();
+
+            StorageFile outputFile;
+            try
+            { outputFile = await MakeOutputFile(fileName); }
+            catch
+            { await WarningDialog(WarningType.FileCreateAccessDenied); return; }
+
+            Stream outputStream = await GetOutputStream(outputFile);
+            Stream audioStream = await GetAudioStreamAsync(videoId);
+
+            await audioStream.CopyToAsync(outputStream, percentProgress);
+            outputStream.Dispose();
+
+            await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
+        }
+        /// <summary>
+        /// Скачивает аудио в формате mp3 из видео по переданной ссылке/id
+        /// </summary>
+        /// <param name="videoId"></param>
+        /// <param name="dataProgress"></param>
+        /// <returns></returns>
+        public async Task Extract(string videoId, IProgress<long> dataProgress)
+        {
+            VideoData info = GetVideoInfo(videoId);
+
+            string fileName = info.Title.ReplaceInvalidChars();
+
+            StorageFile outputFile;
+            try
+            { outputFile = await MakeOutputFile(fileName); }
+            catch
+            { await WarningDialog(WarningType.FileCreateAccessDenied); return; }
+
+            Stream outputStream = await GetOutputStream(outputFile);
+            Stream audioStream = await GetAudioStreamAsync(videoId);
+
+            await audioStream.CopyToAsync(outputStream, dataProgress);
+            outputStream.Dispose();
+
+            await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);
+        }
+        /// <summary>
+        /// Скачивает аудио в формате mp3 из видео по переданной ссылке/id
+        /// </summary>
+        /// <param name="videoId"></param>
+        /// <param name="percentProgress"></param>
+        /// <param name="dataProgress"></param>
+        /// <returns></returns>
+        public async Task Extract(string videoId, IProgress<int> percentProgress, IProgress<long> dataProgress)
+        {
+            VideoData info = GetVideoInfo(videoId);
+
+            string fileName = info.Title.ReplaceInvalidChars();
+
+            StorageFile outputFile;
+            try
+            { outputFile = await MakeOutputFile(fileName); }
+            catch
+            { await WarningDialog(WarningType.FileCreateAccessDenied); return; }
+
+            Stream outputStream = await GetOutputStream(outputFile);
+            Stream audioStream = await GetAudioStreamAsync(videoId);
+
+            await audioStream.CopyToAsync(outputStream, percentProgress, dataProgress);
             outputStream.Dispose();
 
             await outputFile.RenameAsync(fileName + ".mp3", NameCollisionOption.GenerateUniqueName);

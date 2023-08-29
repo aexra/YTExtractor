@@ -28,13 +28,19 @@ namespace YTExtractor.Extensions
 
     public static class StreamExtensions
     {
-        public static async Task CopyToAsync(
-            this Stream source, 
-            Stream destination, 
-            IProgress<int> percentProgress,
-            IProgress<long> dataProgress = null,
-            CancellationToken cancellationToken = default(CancellationToken), 
-            int bufferSize = 0x1000)
+        public static async Task CopyToAsync(this Stream source, Stream destination, CancellationToken cancellationToken = default(CancellationToken), int bufferSize = 0x1000)
+        {
+            var buffer = new byte[bufferSize];
+            int bytesRead;
+            long totalRead = 0;
+            while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            {
+                await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                totalRead += bytesRead;
+            }
+        }
+        public static async Task CopyToAsync(this Stream source,  Stream destination,  IProgress<int> percentProgress, CancellationToken cancellationToken = default(CancellationToken),  int bufferSize = 0x1000)
         {
             var buffer = new byte[bufferSize];
             int bytesRead;
@@ -45,9 +51,35 @@ namespace YTExtractor.Extensions
                 await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 totalRead += bytesRead;
-                //Thread.Sleep(10);
                 percentProgress.Report((int) (totalRead / (double)fileSize * 100));
-                dataProgress?.Report(totalRead);
+            }
+        }
+        public static async Task CopyToAsync(this Stream source, Stream destination, IProgress<long> dataProgress, CancellationToken cancellationToken = default(CancellationToken), int bufferSize = 0x1000)
+        {
+            var buffer = new byte[bufferSize];
+            int bytesRead;
+            long totalRead = 0;
+            while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            {
+                await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                totalRead += bytesRead;
+                dataProgress.Report(totalRead);
+            }
+        }
+        public static async Task CopyToAsync(this Stream source, Stream destination, IProgress<int> percentProgress, IProgress<long> dataProgress, CancellationToken cancellationToken = default(CancellationToken), int bufferSize = 0x1000)
+        {
+            var buffer = new byte[bufferSize];
+            int bytesRead;
+            long totalRead = 0;
+            long fileSize = source.Length;
+            while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            {
+                await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                totalRead += bytesRead;
+                percentProgress.Report((int)(totalRead / (double)fileSize * 100));
+                dataProgress.Report(totalRead);
             }
         }
     }
