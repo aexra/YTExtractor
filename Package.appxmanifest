@@ -10,14 +10,14 @@
 
   <Identity
     Name="d35451da-cbae-4282-86d3-0aed14a733f4"
-    Publisher="CN=deskt"
-    Version="1.0.0.0" />
+    Publisher="CN=aexra"
+    Version="0.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="d35451da-cbae-4282-86d3-0aed14a733f4" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>YTExtractor</DisplayName>
-    <PublisherDisplayName>deskt</PublisherDisplayName>
+    <PublisherDisplayName>Никита Фомин</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -37,10 +37,15 @@
         DisplayName="YTExtractor"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="YTExtractor"
+        Description="Минималистичное приложение для загрузки аудио из YouTube видео."
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>
@@ -48,6 +53,5 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <Capability Name="internetClientServer"/>
-    <rescap:Capability Name="broadFileSystemAccess"/>
   </Capabilities>
 </Package>
