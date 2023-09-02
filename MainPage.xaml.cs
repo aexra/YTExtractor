@@ -37,7 +37,7 @@ namespace YTExtractor
             this.InitializeComponent();
 
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 225));
-            ApplicationView.PreferredLaunchViewSize = new Size(480, 800);
+            ApplicationView.PreferredLaunchViewSize = new Size(500, 800);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             extractor = new YTAudioExtractor();
