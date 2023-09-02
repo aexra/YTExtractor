@@ -13,7 +13,6 @@
             <RowDefinition Height="210"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Button Content="Button" HorizontalAlignment="Center" Margin="0,86,0,0" VerticalAlignment="Top" FocusVisualPrimaryBrush="{x:Null}" FocusVisualSecondaryBrush="{x:Null}" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}" Height="32" Width="62" Opacity="0"/>
         <StackPanel BorderThickness="3" CornerRadius="25" Margin="30,30,30,15" FocusVisualPrimaryBrush="#FF3B8E16" FocusVisualSecondaryBrush="#99900000" BorderBrush="#FF4C4C4C">
             <Grid Height="156">
                 <Grid.RowDefinitions>
