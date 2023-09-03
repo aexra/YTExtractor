@@ -110,12 +110,23 @@ namespace YTExtractor
             VideoData vd = new VideoData();
             vd.Id = videoId;
             vd.Title = r.Title;
-            vd.Thumbnail = r.Thumbnails.Maxres.Url;
+            if (r.Thumbnails.Maxres != null)
+                vd.Thumbnail = r.Thumbnails.Maxres.Url;
+            else if (r.Thumbnails.High != null)
+                vd.Thumbnail = r.Thumbnails.High.Url;
+            else
+                vd.Thumbnail = r.Thumbnails.Default__.Url;
             vd.ChannelId = r.ChannelId;
             vd.ChannelTitle = r.ChannelTitle;
             ChannelsResource.ListRequest request = youtubeService.Channels.List("snippet");
             request.Id = r.ChannelId;
-            vd.ChannelThumbnail = request.Execute().Items.First().Snippet.Thumbnails.High.Url;
+            var rs = request.Execute().Items.First().Snippet;
+            if (rs.Thumbnails.Maxres != null)
+                vd.ChannelThumbnail = rs.Thumbnails.Maxres.Url;
+            else if (r.Thumbnails.High != null)
+                vd.ChannelThumbnail = rs.Thumbnails.High.Url;
+            else
+                vd.ChannelThumbnail = rs.Thumbnails.Default__.Url;
             return vd;
         }
 
